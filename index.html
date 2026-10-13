@@ -620,19 +620,19 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3.5">
-                    <div class="flex flex-col">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1 min-w-0">
                         <label for="date" class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-1.5 ml-1 uppercase tracking-wider">Date</label>
                         <div class="relative w-full">
                             <input type="date" id="date" required="required" 
-                                class="w-full h-12 px-3.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-xs sm:text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border flex items-center" />
+                                class="w-full h-12 px-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-xs sm:text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border flex items-center" />
                         </div>
                     </div>
-                    <div class="flex flex-col">
-                        <label for="global_alli" class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-1.5 ml-1 uppercase tracking-wider">Alli (Total)</label>
+                    <div class="w-28 sm:w-32 shrink-0">
+                        <label for="global_alli" class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-1.5 ml-1 uppercase tracking-wider truncate">Alli (Total)</label>
                         <div class="relative w-full">
                             <input type="number" id="global_alli" required="required" min="0.1" step="0.1" placeholder="0" 
-                                class="w-full h-12 px-3.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-xs sm:text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border flex items-center" />
+                                class="w-full h-12 px-3 text-center bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-sm font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
                         </div>
                     </div>
                 </div>
@@ -1390,6 +1390,13 @@
         window.openAnimatedModal = function(modalId, contentId, focusId) {
             const modal = document.getElementById(modalId);
             const content = document.getElementById(contentId);
+            if (!modal || !content) return;
+
+            // Lock background scroll and interactions
+            document.documentElement.classList.add('overflow-hidden');
+            document.body.classList.add('overflow-hidden');
+            document.body.style.touchAction = 'none';
+
             modal.classList.remove('hidden');
             modal.classList.remove('animate-backdrop-out');
             modal.classList.add('animate-backdrop-in');
@@ -1401,12 +1408,30 @@
         window.closeAnimatedModal = function(modalId, contentId, cb) {
             const modal = document.getElementById(modalId);
             const content = document.getElementById(contentId);
+            if (!modal || !content) return;
+
+            // Check if any other modal is still open before restoring background scroll
+            const openModals = document.querySelectorAll('[id$="Modal"]:not(.hidden)');
+            if (openModals.length <= 1) {
+                document.documentElement.classList.remove('overflow-hidden');
+                document.body.classList.remove('overflow-hidden');
+                document.body.style.touchAction = '';
+            }
+
             modal.classList.remove('animate-backdrop-in');
             modal.classList.add('animate-backdrop-out');
             content.classList.remove('animate-modal-in');
             content.classList.add('animate-modal-out');
             setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('animate-backdrop-out'); content.classList.remove('animate-modal-out'); if (cb) cb(); }, 270);
         };
+
+        // Prevent accidental touch dragging or gestures on modal backdrops
+        document.addEventListener('touchmove', (e) => {
+            const activeModal = e.target.closest('[id$="Modal"]');
+            if (activeModal && e.target === activeModal) {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
         window.openAddRecordModal = function() { window.openAnimatedModal('addRecordModal', 'addRecordContent', 'name'); };
         window.closeAddRecordModal = function() { window.closeAnimatedModal('addRecordModal', 'addRecordContent'); };
