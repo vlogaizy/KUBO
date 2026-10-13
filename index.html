@@ -824,8 +824,8 @@
         
             <div class="relative mb-4 text-left">
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 dark:text-slate-500 text-base font-bold">Rs.</span>
-                <input type="number" id="newPaymentAmount" placeholder="0" inputmode="numeric"
-                    class="w-full pl-10 pr-3.5 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-xl font-extrabold text-slate-700 dark:text-slate-100 tracking-wide" />
+                <input type="text" id="newPaymentAmount" placeholder="0" inputmode="numeric" oninput="formatCurrencyInput(this)"
+                    class="w-full pl-10 pr-3.5 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-xl font-extrabold text-slate-700 dark:text-slate-100 tracking-wide [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
             </div>
             
             <div class="flex gap-2.5">
@@ -910,6 +910,20 @@
                         <div class="text-left">
                             <h4 class="text-sm font-bold text-slate-800 dark:text-white transition-colors">Customize SMS</h4>
                             <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">Edit auto-reply message templates</p>
+                        </div>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
+                <!-- Support Button -->
+                <button onclick="openSupportModal()" class="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 rounded-2xl border border-slate-100 dark:border-slate-700/60 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center transition-colors">
+                            <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white transition-colors">Support</h4>
+                            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">Get help & assistance</p>
                         </div>
                     </div>
                     <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
@@ -1024,6 +1038,37 @@
             </div>
             
             <p class="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 mt-2 uppercase tracking-wide">&copy; 2026 KUBO</p>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div id="supportModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div id="supportContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[320px] p-6 relative transform transition-all border border-white/50 flex flex-col items-center bg-white dark:bg-slate-900 mx-auto text-center">
+            <button onclick="closeSupportModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="w-12 h-12 bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm mt-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-800 dark:text-white tracking-tight mb-1">Support</h3>
+            <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-4 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full border border-amber-100 dark:border-amber-800/50">Need Help?</p>
+            
+            <p class="text-[12px] font-medium text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+                For assistance, bug reports, or feature requests regarding KUBO Tractor Works, please contact our support team.
+            </p>
+            
+            <div class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 rounded-xl p-3 mb-2 flex items-center justify-between text-left shadow-sm">
+                <div>
+                    <h4 class="text-[11px] font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-0.5">Help Email</h4>
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100">support@kubo.app</p>
+                </div>
+                <div class="w-8 h-8 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center shadow-inner">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+            </div>
+            
+            <button onclick="closeSupportModal()" class="w-full mt-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl active:bg-slate-200 dark:active:bg-slate-700 transition-colors text-xs">Close</button>
         </div>
     </div>
 
@@ -1300,6 +1345,17 @@
 
         window.closeAboutModal = function() {
             window.closeAnimatedModal('aboutModal', 'aboutContent');
+        };
+
+        window.openSupportModal = function() {
+            window.closeSettingsModal();
+            setTimeout(() => {
+                window.openAnimatedModal('supportModal', 'supportContent');
+            }, 300);
+        };
+
+        window.closeSupportModal = function() {
+            window.closeAnimatedModal('supportModal', 'supportContent');
         };
         
         window.resetSMSTemplates = function() {
@@ -1752,7 +1808,7 @@
 
         window.savePayment = async function() {
             if (activePaymentRecordIndex === null) return;
-            const amt = parseFloat(document.getElementById('newPaymentAmount').value);
+            const amt = parseCurrencyInput(document.getElementById('newPaymentAmount').value);
             if (isNaN(amt) || amt <= 0) { window.customAlert("Enter a valid amount."); return; }
             
             const btn = document.getElementById('savePaymentConfirmBtn');
