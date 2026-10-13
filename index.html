@@ -609,6 +609,14 @@
                         <input type="text" id="location" required="required" placeholder="Location" 
                             class="w-full pl-9 bg-transparent border-none focus:ring-0 outline-none text-[14px] font-bold text-slate-700 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500" />
                     </div>
+                    <div class="h-[1px] bg-slate-100 dark:bg-slate-700 mx-5"></div>
+                    <div class="relative flex items-center px-5 py-4">
+                        <span class="text-slate-400 dark:text-slate-500 absolute left-5 flex items-center justify-center w-5 h-5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        </span>
+                        <input type="tel" id="phone" placeholder="Phone Number (Optional)" 
+                            class="w-full pl-9 bg-transparent border-none focus:ring-0 outline-none text-[14px] font-bold text-slate-700 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500" />
+                    </div>
                 </div>
 
                 <div class="w-1/2">
@@ -841,6 +849,29 @@
             <div id="historyList" class="space-y-2.5 mb-4 overflow-y-auto no-scrollbar flex-1 min-h-[90px]"></div>
             
             <button onclick="closeHistoryModal()" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl active:bg-slate-200 dark:active:bg-slate-700 transition-colors shrink-0 text-sm">Close</button>
+        </div>
+    </div>
+
+    <!-- Rates Breakdown Modal -->
+    <div id="ratesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div id="ratesContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-sm w-full p-5 relative transform transition-all border border-white/50 max-h-[80vh] flex flex-col mx-auto">
+            <button onclick="closeRatesModal()" class="absolute top-4 right-4 w-7 h-7 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="w-11 h-11 bg-teal-100 dark:bg-teal-950/60 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1 text-center shrink-0">Rates Breakdown</h3>
+            <p id="ratesModalContext" class="text-slate-500 dark:text-slate-400 text-xs mb-4 font-medium text-center shrink-0"></p>
+            
+            <div id="ratesList" class="space-y-2.5 mb-4 overflow-y-auto no-scrollbar flex-1 min-h-[90px]"></div>
+            
+            <div class="bg-teal-50 dark:bg-teal-950/30 border border-teal-100 dark:border-teal-900/50 rounded-xl p-3 flex justify-between items-center mb-4 shrink-0">
+                <span class="text-xs font-extrabold text-teal-800 dark:text-teal-400">Total Amount</span>
+                <span id="ratesModalTotal" class="text-sm font-black text-teal-700 dark:text-teal-300"></span>
+            </div>
+
+            <button onclick="closeRatesModal()" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl active:bg-slate-200 dark:active:bg-slate-700 transition-colors shrink-0 text-sm">Close</button>
         </div>
     </div>
 
@@ -1419,6 +1450,67 @@
             window.closeAnimatedModal('paymentModal', 'paymentContent', () => activePaymentRecordIndex = null); 
         };
 
+        window.openRatesModal = function(idx) {
+            const r = records[idx];
+            document.getElementById('ratesModalContext').innerText = `${r.name} (${r.date})`;
+            const list = document.getElementById('ratesList');
+            list.innerHTML = '';
+            
+            let totalAmt = 0;
+
+            if (r.works && r.works.length > 0) {
+                r.works.forEach(w => {
+                    let type = w.type;
+                    // Format older labels to new standard
+                    if (type === '1st Heeya') type = '1st';
+                    if (type === '2nd Heeya') type = '2nd';
+                    if (type === '3 Pooru gaama') type = '3rd';
+
+                    const subtotal = (w.alli / 6) * w.price;
+                    totalAmt += subtotal;
+
+                    list.innerHTML += `
+                        <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex flex-col gap-2 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 bg-slate-200 dark:bg-slate-700/80 px-2 py-0.5 rounded-md">${type}</span>
+                                <span class="font-extrabold text-slate-800 dark:text-slate-100 text-[13px]">Rs. ${subtotal.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium px-1">
+                                <span>Alli: <strong class="text-slate-700 dark:text-slate-300 text-[11px]">${w.alli}</strong></span>
+                                <span>Rate: <strong class="text-slate-700 dark:text-slate-300 text-[11px]">Rs. ${w.price.toLocaleString()}/Acre</strong></span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // Fallback for older legacy records
+                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                totalAmt = tot;
+                const displayAlli = r.displayAlli !== undefined ? r.displayAlli : Number((r.acres * 6).toFixed(2));
+                
+                list.innerHTML += `
+                    <div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex flex-col gap-2 shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 bg-slate-200 dark:bg-slate-700/80 px-2 py-0.5 rounded-md">General Work</span>
+                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-[13px]">Rs. ${tot.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-[10px] text-slate-500 dark:text-slate-400 font-medium px-1">
+                            <span>Alli: <strong class="text-slate-700 dark:text-slate-300 text-[11px]">${displayAlli}</strong></span>
+                            <span>Rate: <strong class="text-slate-700 dark:text-slate-300 text-[11px]">Rs. ${(r.price || 0).toLocaleString()}/Acre</strong></span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('ratesModalTotal').innerText = `Rs. ${totalAmt.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
+            
+            window.openAnimatedModal('ratesModal', 'ratesContent');
+        };
+        
+        window.closeRatesModal = function() {
+            window.closeAnimatedModal('ratesModal', 'ratesContent');
+        };
+
         window.savePayment = async function() {
             if (activePaymentRecordIndex === null) return;
             const amt = parseFloat(document.getElementById('newPaymentAmount').value);
@@ -1525,7 +1617,7 @@
                 const due = tot - (r.paidAmount || 0);
                 if (currentFilter === 'pending' && due <= 0) return false;
                 if (currentFilter === 'completed' && due > 0) return false;
-                if (searchKeyword && !r.name.toLowerCase().includes(searchKeyword) && !r.location.toLowerCase().includes(searchKeyword) && !r.date.includes(searchKeyword)) return false;
+                if (searchKeyword && !r.name.toLowerCase().includes(searchKeyword) && !r.location.toLowerCase().includes(searchKeyword) && !(r.phone && r.phone.includes(searchKeyword)) && !r.date.includes(searchKeyword)) return false;
                 return true;
             });
 
@@ -1577,7 +1669,7 @@
                                     <h4 class="font-extrabold text-slate-800 dark:text-white text-sm truncate">${record.name}</h4>
                                     <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase tracking-wider ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${isPaid ? '✓ Completed' : '● Pending'}</span>
                                 </div>
-                                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">${record.location} &bull; ${record.date}</p>
+                                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">${record.location} ${record.phone ? '&bull; ' + record.phone + ' ' : ''}&bull; ${record.date}</p>
                                 <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 truncate mt-0.5 uppercase tracking-wider">${workTags}</p>
                             </div>
                         </div>
@@ -1620,6 +1712,7 @@
             e.preventDefault();
             const name = document.getElementById('name').value.trim();
             const location = document.getElementById('location').value.trim();
+            const phone = document.getElementById('phone').value.trim();
             const date = document.getElementById('date').value;
             const paid = parseFloat(document.getElementById('paid').value || 0);
 
@@ -1662,7 +1755,7 @@
 
             try {
                 await addDoc(collection(db, 'cubozy_tractor_works'), {
-                    name, location, date, 
+                    name, location, phone, date, 
                     works,
                     totalAmount,
                     displayAlli: maxAlli,
