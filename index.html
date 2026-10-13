@@ -622,10 +622,10 @@
                 <div class="space-y-3">
                     <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 ml-1.5 uppercase tracking-wider mb-1">Work Types (Select needed)</label>
                     
-                    <!-- 1st Heeya -->
+                    <!-- 1st -->
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
                         <div class="flex justify-between items-center mb-2.5">
-                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">1st Heeya</h4>
+                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">1st</h4>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="toggle_heeya1" class="sr-only peer" onchange="toggleWorkSection('heeya1')">
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -646,10 +646,10 @@
                         </div>
                     </div>
 
-                    <!-- 2nd Heeya -->
+                    <!-- 2nd -->
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
                         <div class="flex justify-between items-center mb-2.5">
-                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">2nd Heeya</h4>
+                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">2nd</h4>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="toggle_heeya2" class="sr-only peer" onchange="toggleWorkSection('heeya2')">
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -670,10 +670,10 @@
                         </div>
                     </div>
 
-                    <!-- 3 Pooru gaama -->
+                    <!-- 3rd -->
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
                         <div class="flex justify-between items-center mb-2.5">
-                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">3 Pooru gaama</h4>
+                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">3rd</h4>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="toggle_pooru" class="sr-only peer" onchange="toggleWorkSection('pooru')">
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -1551,7 +1551,13 @@
                     } else {
                         rateDisplay = formatCurrency(record.works[0].price);
                     }
-                    workTags = record.works.map(w => w.type).join(', ');
+                    workTags = record.works.map(w => {
+                        let type = w.type;
+                        if (type === '1st Heeya') type = '1st';
+                        if (type === '2nd Heeya') type = '2nd';
+                        if (type === '3 Pooru gaama') type = '3rd';
+                        return type;
+                    }).join(', ');
                 } else {
                     rateDisplay = formatCurrency(record.price || 0);
                     workTags = 'General Work';
@@ -1582,8 +1588,11 @@
                             <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Alli</span>
                             <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${displayAlli}</span>
                         </div>
-                        <div class="flex-1 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-extrabold text-slate-400">Rate</span>
+                        <div onclick="openRatesModal(${origIdx})" role="button" title="View Rates Breakdown" class="flex-1 bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center cursor-pointer active:scale-95 transition-all shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[9px] uppercase font-extrabold text-slate-400">Rate</span>
+                                <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
                             <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${rateDisplay}</span>
                         </div>
                         <div class="flex-1 bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 rounded-xl px-2 py-1 flex flex-col justify-center text-right">
@@ -1624,7 +1633,7 @@
                     const alli = parseFloat(document.getElementById(`alli_${id}`).value);
                     const price = parseFloat(document.getElementById(`price_${id}`).value);
                     if (!isNaN(alli) && !isNaN(price)) {
-                        const typeName = id === 'heeya1' ? '1st Heeya' : (id === 'heeya2' ? '2nd Heeya' : '3 Pooru gaama');
+                        const typeName = id === 'heeya1' ? '1st' : (id === 'heeya2' ? '2nd' : '3rd');
                         works.push({ type: typeName, alli, price });
                         totalAmount += (alli / 6) * price;
                         if (alli > maxAlli) maxAlli = alli;
@@ -1638,6 +1647,18 @@
             }
 
             if (!name || !location || !date) { window.customAlert("Please fill all required fields."); return; }
+
+            const submitBtn = document.getElementById('saveRecordBtn');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'pointer-events-none');
+            submitBtn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white inline-block mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Saving...</span>
+            `;
 
             try {
                 await addDoc(collection(db, 'cubozy_tractor_works'), {
@@ -1666,6 +1687,10 @@
                 window.closeAddRecordModal();
             } catch (e) {
                 window.customAlert("Failed to save record.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'pointer-events-none');
+                submitBtn.innerHTML = originalBtnHtml;
             }
         });
     </script>
