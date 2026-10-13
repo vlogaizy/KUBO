@@ -601,8 +601,8 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Acres</label>
-                        <input type="number" id="acres" required="required" min="0.01" step="0.01" placeholder="0.00" inputmode="decimal"
+                        <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Alli</label>
+                        <input type="number" id="alli" required="required" min="0.1" step="0.1" placeholder="0" inputmode="decimal"
                             class="w-full px-5 py-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
                     </div>
 
@@ -820,6 +820,8 @@
         } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
         import { 
             initializeFirestore,
+            persistentLocalCache,
+            persistentMultipleTabManager,
             setLogLevel,
             getFirestore, 
             doc, 
@@ -828,8 +830,7 @@
             deleteDoc, 
             onSnapshot, 
             collection, 
-            setDoc, 
-            enableIndexedDbPersistence 
+            setDoc
         } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
         let records = [];
@@ -864,17 +865,28 @@
             measurementId: "G-GS42YHG8VB"
         };
 
-        try { setLogLevel('error'); } catch (e) {}
+        try { setLogLevel('silent'); } catch (e) {}
 
         const app = initializeApp(firebaseConfig);
         try {
-            db = initializeFirestore(app, { experimentalForceLongPolling: true });
+            db = initializeFirestore(app, {
+                experimentalAutoDetectLongPolling: true,
+                useFetchStreams: false,
+                localCache: persistentLocalCache({
+                    tabManager: persistentMultipleTabManager()
+                })
+            });
         } catch (e) {
-            db = getFirestore(app);
+            try {
+                db = initializeFirestore(app, {
+                    experimentalAutoDetectLongPolling: true,
+                    useFetchStreams: false
+                });
+            } catch (err) {
+                db = getFirestore(app);
+            }
         }
         auth = getAuth(app);
-
-        enableIndexedDbPersistence(db).catch(() => {});
 
         let lastGrandTotal = 0;
         let lastTotalPaid = 0;
@@ -1448,6 +1460,8 @@
                 const due = tot - paid;
                 const isPaid = due <= 0;
                 const origIdx = records.findIndex(r => r.id === record.id);
+                // Convert old records to Alli for display if needed (1 Acre = 6 Alli)
+                const displayAlli = record.alli !== undefined ? record.alli : Number((record.acres * 6).toFixed(2));
 
                 const card = document.createElement('div');
                 card.className = `bg-white dark:bg-slate-800/95 rounded-[1.6rem] p-2 pl-3.5 border ${isPaid ? 'border-emerald-200 dark:border-emerald-900/50' : 'border-amber-200 dark:border-amber-900/50'} shadow-md relative overflow-hidden transition-all mb-2.5`;
@@ -1470,8 +1484,8 @@
                     </div>
                     <div class="flex gap-1.5 mb-1.5">
                         <div class="w-20 shrink-0 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center text-center">
-                            <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Acres</span>
-                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${record.acres}</span>
+                            <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Alli</span>
+                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${displayAlli}</span>
                         </div>
                         <div class="flex-1 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center">
                             <span class="text-[9px] uppercase font-extrabold text-slate-400">Rate</span>
@@ -1503,15 +1517,18 @@
             const name = document.getElementById('name').value.trim();
             const location = document.getElementById('location').value.trim();
             const date = document.getElementById('date').value;
-            const acres = parseFloat(document.getElementById('acres').value);
+            const alli = parseFloat(document.getElementById('alli').value);
             const price = parseFloat(document.getElementById('price').value);
             const paid = parseFloat(document.getElementById('paid').value || 0);
 
-            if (!name || !location || !date || isNaN(acres) || isNaN(price)) { window.customAlert("Please fill all required fields."); return; }
+            if (!name || !location || !date || isNaN(alli) || isNaN(price)) { window.customAlert("Please fill all required fields."); return; }
+
+            // Calculate exact Acres based on the 1 Acre = 6 Alli rule
+            const acres = alli / 6;
 
             try {
                 await addDoc(collection(db, 'cubozy_tractor_works'), {
-                    name, location, date, acres, price, paidAmount: paid,
+                    name, location, date, acres, alli, price, paidAmount: paid,
                     paymentHistory: paid > 0 ? [{ amount: paid, date }] : [],
                     userId, createdAt: new Date().toISOString()
                 });
