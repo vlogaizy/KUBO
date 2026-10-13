@@ -40,6 +40,26 @@
         window.closeSettingsModal = window.closeSettingsModal || function() {};
         window.switchAuthMode = window.switchAuthMode || function() {};
         window.openForgotPasswordModal = window.openForgotPasswordModal || function() {};
+        
+        window.toggleWorkSection = function(id) {
+            const checkbox = document.getElementById('toggle_' + id);
+            const fields = document.getElementById('fields_' + id);
+            const alliInput = document.getElementById('alli_' + id);
+            const priceInput = document.getElementById('price_' + id);
+            if (checkbox && checkbox.checked) {
+                fields.classList.remove('opacity-50', 'pointer-events-none');
+                alliInput.required = true;
+                priceInput.required = true;
+                if (window.playClickSound) window.playClickSound();
+            } else if (checkbox) {
+                fields.classList.add('opacity-50', 'pointer-events-none');
+                alliInput.required = false;
+                priceInput.required = false;
+                alliInput.value = '';
+                priceInput.value = '';
+                if (window.playClickSound) window.playClickSound();
+            }
+        };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script>
@@ -599,19 +619,78 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Alli</label>
-                        <input type="number" id="alli" required="required" min="0.1" step="0.1" placeholder="0" inputmode="decimal"
-                            class="w-full px-5 py-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                <div class="space-y-3">
+                    <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 ml-1.5 uppercase tracking-wider mb-1">Work Types (Select needed)</label>
+                    
+                    <!-- 1st Heeya -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
+                        <div class="flex justify-between items-center mb-2.5">
+                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">1st Heeya</h4>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle_heeya1" class="sr-only peer" onchange="toggleWorkSection('heeya1')">
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div id="fields_heeya1" class="grid grid-cols-2 gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
+                            <div>
+                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Alli</label>
+                                <input type="number" id="alli_heeya1" min="0.1" step="0.1" placeholder="0" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-[12px] font-bold">Rs.</span>
+                                    <input type="number" id="price_heeya1" min="0" step="1" placeholder="0" class="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Price / Acre</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-slate-400 dark:text-slate-500 text-[14px] font-bold">Rs.</span>
-                            <input type="number" id="price" required="required" min="0" step="1" placeholder="0" inputmode="numeric"
-                                class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                    <!-- 2nd Heeya -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
+                        <div class="flex justify-between items-center mb-2.5">
+                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">2nd Heeya</h4>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle_heeya2" class="sr-only peer" onchange="toggleWorkSection('heeya2')">
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div id="fields_heeya2" class="grid grid-cols-2 gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
+                            <div>
+                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Alli</label>
+                                <input type="number" id="alli_heeya2" min="0.1" step="0.1" placeholder="0" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-[12px] font-bold">Rs.</span>
+                                    <input type="number" id="price_heeya2" min="0" step="1" placeholder="0" class="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3 Pooru gaama -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
+                        <div class="flex justify-between items-center mb-2.5">
+                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">3 Pooru gaama</h4>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle_pooru" class="sr-only peer" onchange="toggleWorkSection('pooru')">
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
+                            </label>
+                        </div>
+                        <div id="fields_pooru" class="grid grid-cols-2 gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
+                            <div>
+                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Alli</label>
+                                <input type="number" id="alli_pooru" min="0.1" step="0.1" placeholder="0" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-[12px] font-bold">Rs.</span>
+                                    <input type="number" id="price_pooru" min="0" step="1" placeholder="0" class="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1321,7 +1400,8 @@
         window.openPaymentModal = function(idx) {
             activePaymentRecordIndex = idx;
             const r = records[idx];
-            document.getElementById('paymentModalContext').innerText = `${r.name} - Due: Rs. ${(r.acres * r.price - (r.paidAmount || 0)).toLocaleString()}`;
+            const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+            document.getElementById('paymentModalContext').innerText = `${r.name} - Due: Rs. ${(tot - (r.paidAmount || 0)).toLocaleString()}`;
             document.getElementById('newPaymentAmount').value = '';
             const btn = document.getElementById('savePaymentConfirmBtn');
             if (btn) {
@@ -1409,7 +1489,7 @@
             recordsList.innerHTML = '';
             let grandTotal = 0, totalPaid = 0, totalDue = 0;
             records.forEach(r => {
-                const tot = r.acres * r.price;
+                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
                 const paid = r.paidAmount || 0;
                 grandTotal += tot; totalPaid += paid; totalDue += (tot - paid);
             });
@@ -1441,7 +1521,7 @@
             }
 
             const filtered = records.filter(r => {
-                const tot = r.acres * r.price;
+                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
                 const due = tot - (r.paidAmount || 0);
                 if (currentFilter === 'pending' && due <= 0) return false;
                 if (currentFilter === 'completed' && due > 0) return false;
@@ -1455,13 +1535,27 @@
             emptyState.classList.add('hidden'); recordsList.classList.remove('hidden');
 
             filtered.forEach(record => {
-                const tot = record.acres * record.price;
+                const tot = record.totalAmount !== undefined ? record.totalAmount : (record.acres * record.price);
                 const paid = record.paidAmount || 0;
                 const due = tot - paid;
                 const isPaid = due <= 0;
                 const origIdx = records.findIndex(r => r.id === record.id);
                 // Convert old records to Alli for display if needed (1 Acre = 6 Alli)
-                const displayAlli = record.alli !== undefined ? record.alli : Number((record.acres * 6).toFixed(2));
+                const displayAlli = record.displayAlli !== undefined ? record.displayAlli : (record.alli !== undefined ? record.alli : Number((record.acres * 6).toFixed(2)));
+
+                let rateDisplay = '';
+                let workTags = '';
+                if (record.works && record.works.length > 0) {
+                    if (record.works.length > 1) {
+                        rateDisplay = 'Multi';
+                    } else {
+                        rateDisplay = formatCurrency(record.works[0].price);
+                    }
+                    workTags = record.works.map(w => w.type).join(', ');
+                } else {
+                    rateDisplay = formatCurrency(record.price || 0);
+                    workTags = 'General Work';
+                }
 
                 const card = document.createElement('div');
                 card.className = `bg-white dark:bg-slate-800/95 rounded-[1.6rem] p-2 pl-3.5 border ${isPaid ? 'border-emerald-200 dark:border-emerald-900/50' : 'border-amber-200 dark:border-amber-900/50'} shadow-md relative overflow-hidden transition-all mb-2.5`;
@@ -1478,6 +1572,7 @@
                                     <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase tracking-wider ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${isPaid ? '✓ Completed' : '● Pending'}</span>
                                 </div>
                                 <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">${record.location} &bull; ${record.date}</p>
+                                <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 truncate mt-0.5 uppercase tracking-wider">${workTags}</p>
                             </div>
                         </div>
                         <button onclick="requestDeleteRecord(${origIdx})" class="p-1 text-slate-400 hover:text-red-500 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
@@ -1489,7 +1584,7 @@
                         </div>
                         <div class="flex-1 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center">
                             <span class="text-[9px] uppercase font-extrabold text-slate-400">Rate</span>
-                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${formatCurrency(record.price)}</span>
+                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${rateDisplay}</span>
                         </div>
                         <div class="flex-1 bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 rounded-xl px-2 py-1 flex flex-col justify-center text-right">
                             <span class="text-[9px] uppercase font-extrabold text-emerald-700">Total</span>
@@ -1517,18 +1612,40 @@
             const name = document.getElementById('name').value.trim();
             const location = document.getElementById('location').value.trim();
             const date = document.getElementById('date').value;
-            const alli = parseFloat(document.getElementById('alli').value);
-            const price = parseFloat(document.getElementById('price').value);
             const paid = parseFloat(document.getElementById('paid').value || 0);
 
-            if (!name || !location || !date || isNaN(alli) || isNaN(price)) { window.customAlert("Please fill all required fields."); return; }
+            const works = [];
+            let totalAmount = 0;
+            let maxAlli = 0;
 
-            // Calculate exact Acres based on the 1 Acre = 6 Alli rule
-            const acres = alli / 6;
+            ['heeya1', 'heeya2', 'pooru'].forEach(id => {
+                const cb = document.getElementById(`toggle_${id}`);
+                if (cb && cb.checked) {
+                    const alli = parseFloat(document.getElementById(`alli_${id}`).value);
+                    const price = parseFloat(document.getElementById(`price_${id}`).value);
+                    if (!isNaN(alli) && !isNaN(price)) {
+                        const typeName = id === 'heeya1' ? '1st Heeya' : (id === 'heeya2' ? '2nd Heeya' : '3 Pooru gaama');
+                        works.push({ type: typeName, alli, price });
+                        totalAmount += (alli / 6) * price;
+                        if (alli > maxAlli) maxAlli = alli;
+                    }
+                }
+            });
+
+            if (works.length === 0) {
+                window.customAlert("Please select and fill at least one work type.");
+                return;
+            }
+
+            if (!name || !location || !date) { window.customAlert("Please fill all required fields."); return; }
 
             try {
                 await addDoc(collection(db, 'cubozy_tractor_works'), {
-                    name, location, date, acres, alli, price, paidAmount: paid,
+                    name, location, date, 
+                    works,
+                    totalAmount,
+                    displayAlli: maxAlli,
+                    paidAmount: paid,
                     paymentHistory: paid > 0 ? [{ amount: paid, date }] : [],
                     userId, createdAt: new Date().toISOString()
                 });
@@ -1541,6 +1658,10 @@
                 }
 
                 form.reset();
+                ['heeya1', 'heeya2', 'pooru'].forEach(id => {
+                    const cb = document.getElementById(`toggle_${id}`);
+                    if (cb) { cb.checked = false; window.toggleWorkSection(id); }
+                });
                 document.getElementById('date').valueAsDate = new Date();
                 window.closeAddRecordModal();
             } catch (e) {
