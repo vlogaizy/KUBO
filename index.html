@@ -525,30 +525,24 @@
                 </div>
             </div>
 
-            <!-- Driver Balance Card (Compact Size) -->
-            <button onclick="openDriverModal()" class="w-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 rounded-2xl shadow-lg shadow-indigo-900/5 border border-slate-100 dark:border-slate-700/60 p-4 text-left transition-all active:scale-[0.98] group">
-                <div class="flex justify-between items-center mb-2">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </div>
-                        <div>
-                            <h3 class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-0">Driver Balance</h3>
-                            <p class="text-xl font-extrabold text-slate-800 dark:text-white" id="driverTotalDisplay">Rs. 0</p>
-                        </div>
+            <!-- Compact Driver Settlement Card -->
+            <button onclick="openDriverModal()" class="w-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 rounded-2xl shadow-lg shadow-indigo-900/5 border border-slate-100 dark:border-slate-700/60 px-3.5 py-3 text-left transition-all active:scale-[0.98] group flex items-center justify-between">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-7 h-7 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center shadow-sm shrink-0">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-slate-400 dark:text-slate-400 text-[9px] font-bold uppercase tracking-widest mb-0">Driver Settlement</h3>
+                        <p class="text-base font-extrabold text-slate-800 dark:text-white leading-tight truncate" id="driverTotalDisplay">Rs. 0</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 shrink-0">
+                    <div class="flex flex-col items-end text-right">
+                        <div class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Paid: <span id="driverCardPaidDisplay" class="font-extrabold">Rs. 0</span></div>
+                        <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400">Due: <span id="driverCardDueDisplay" class="font-extrabold">Rs. 0</span></div>
                     </div>
                     <div class="bg-indigo-50 dark:bg-indigo-950/50 p-2 rounded-full text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-700/60 pt-2">
-                    <div>
-                        <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Paid to Driver</span>
-                        <p class="text-xs font-extrabold text-emerald-700 dark:text-emerald-400" id="driverPaidDisplay">Rs. 0</p>
-                    </div>
-                    <div class="border-l border-slate-100 dark:border-slate-700/60 pl-3">
-                        <span class="text-[9px] font-bold uppercase tracking-wider text-amber-500 dark:text-amber-400">Driver Due</span>
-                        <p class="text-xs font-extrabold text-amber-600 dark:text-amber-400" id="driverDueDisplay">Rs. 0</p>
                     </div>
                 </div>
             </button>
@@ -748,7 +742,7 @@
         </div>
     </div>
 
-    <div id="alertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
+    <div id="alertModal" class="fixed inset-0 z-[400] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="alertContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-xs w-full p-5 text-center transform transition-all border border-white/50">
             <div class="w-11 h-11 bg-amber-100 dark:bg-amber-950/60 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -912,7 +906,7 @@
             <div class="w-11 h-11 bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-3 shrink-0 shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             </div>
-            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1 text-center shrink-0">Driver Settlements</h3>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1 text-center shrink-0">Driver Settlement</h3>
             <p class="text-slate-500 dark:text-slate-400 text-xs mb-4 font-medium text-center shrink-0">Manage driver payments & history</p>
             
             <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 rounded-2xl p-4 mb-4 shrink-0 space-y-2">
@@ -1715,7 +1709,7 @@
 
         function initCloudSync() {
             if (unsubscribeRecords) unsubscribeRecords();
-            unsubscribeRecords = onSnapshot(collection(db, 'cubozy_tractor_works'), (snapshot) => {
+            unsubscribeRecords = onSnapshot(collection(db, 'kubo_works'), (snapshot) => {
                 records = [];
                 snapshot.forEach((docSnap) => records.push({ id: docSnap.id, ...docSnap.data() }));
                 records.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1725,7 +1719,7 @@
             });
 
             if (unsubscribeDriver) unsubscribeDriver();
-            unsubscribeDriver = onSnapshot(doc(db, 'kubo_settings', 'driver_settlements'), (docSnap) => {
+            unsubscribeDriver = onSnapshot(doc(db, 'kubo_driver', 'kubo_driver_01'), (docSnap) => {
                 if (docSnap.exists()) {
                     driverData = docSnap.data();
                 } else {
@@ -1760,7 +1754,7 @@
                 const history = driverData.paymentHistory || [];
                 history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
 
-                await setDoc(doc(db, 'kubo_settings', 'driver_settlements'), {
+                await setDoc(doc(db, 'kubo_driver', 'kubo_driver_01'), {
                     paidAmount: newPaid,
                     paymentHistory: history,
                     updatedAt: new Date().toISOString()
@@ -1788,20 +1782,18 @@
             const driverPaid = driverData.paidAmount || 0;
             const driverDue = driverTotal - driverPaid;
 
-            const driverTotalDisplay = document.getElementById('driverTotalDisplay');
-            const driverPaidDisplay = document.getElementById('driverPaidDisplay');
-            const driverDueDisplay = document.getElementById('driverDueDisplay');
-
-            if (driverTotalDisplay) driverTotalDisplay.innerText = formatCurrency(driverTotal);
-            if (driverPaidDisplay) driverPaidDisplay.innerText = formatCurrency(driverPaid);
-            if (driverDueDisplay) driverDueDisplay.innerText = formatCurrency(driverDue > 0 ? driverDue : 0);
-
             const modalTotal = document.getElementById('driverModalTotal');
             const modalPaid = document.getElementById('driverModalPaid');
             const modalDue = document.getElementById('driverModalDue');
             if (modalTotal) modalTotal.innerText = formatCurrency(driverTotal);
             if (modalPaid) modalPaid.innerText = formatCurrency(driverPaid);
             if (modalDue) modalDue.innerText = formatCurrency(driverDue > 0 ? driverDue : 0);
+
+            // Update home page compact card paid and due displays
+            const cardPaid = document.getElementById('driverCardPaidDisplay');
+            const cardDue = document.getElementById('driverCardDueDisplay');
+            if (cardPaid) cardPaid.innerText = formatCurrency(driverPaid);
+            if (cardDue) cardDue.innerText = formatCurrency(driverDue > 0 ? driverDue : 0);
 
             const historyList = document.getElementById('driverHistoryList');
             if (historyList) {
@@ -1883,7 +1875,7 @@
                     document.getElementById('clearPassword').value = '';
                     if (recordToDelete !== null) {
                         window.customConfirm('PIN Verified. Delete this record?', async () => {
-                            try { await deleteDoc(doc(db, 'cubozy_tractor_works', records[recordToDelete].id)); } catch (e) {}
+                            try { await deleteDoc(doc(db, 'kubo_works', records[recordToDelete].id)); } catch (e) {}
                             recordToDelete = null;
                         });
                     }
@@ -2005,7 +1997,7 @@
                 const history = r.paymentHistory || [];
                 history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
                 
-                await updateDoc(doc(db, 'cubozy_tractor_works', r.id), { paidAmount: newPaid, paymentHistory: history });
+                await updateDoc(doc(db, 'kubo_works', r.id), { paidAmount: newPaid, paymentHistory: history });
                 
                 // Send automated SMS if customer phone exists
                 if (r.phone && r.phone.trim().length > 0) {
@@ -2186,7 +2178,6 @@
                 const origIdx = records.findIndex(r => r.id === record.id);
                 // Convert old records to Alli for display if needed (1 Acre = 6 Alli)
                 const displayAlli = record.displayAlli !== undefined ? record.displayAlli : (record.alli !== undefined ? record.alli : Number((record.acres * 6).toFixed(2)));
-                const displayAcres = Number((displayAlli / 6).toFixed(1));
 
                 let rateDisplay = '';
                 let workTags = '';
@@ -2230,9 +2221,8 @@
                     </div>
                     <div class="flex gap-1.5 mb-1.5">
                         <div class="w-20 shrink-0 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center text-center">
-                            <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Alli / Acres</span>
-                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${displayAlli}</span>
-                            <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 truncate leading-tight mt-0.5">${displayAcres} Acres</span>
+                            <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Alli</span>
+                            <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight mt-0.5">${displayAlli}</span>
                         </div>
                         <div onclick="openRatesModal(${origIdx})" role="button" title="View Rates Breakdown" class="flex-1 bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center cursor-pointer active:scale-95 transition-all shadow-sm">
                             <div class="flex items-center justify-between">
@@ -2306,7 +2296,7 @@
             `;
 
             try {
-                await addDoc(collection(db, 'cubozy_tractor_works'), {
+                await addDoc(collection(db, 'kubo_works'), {
                     name, location, phone, date, 
                     works,
                     totalAmount,
@@ -2332,7 +2322,7 @@
                     if (cb) { cb.checked = false; window.toggleWorkSection(id); }
                 });
                 document.getElementById('date').valueAsDate = new Date();
-                document.getElementById('global_alli').value = '';
+                document.getElementById('global_alli').value = '',
                 window.closeAddRecordModal();
             } catch (e) {
                 window.customAlert("Failed to save record.");
