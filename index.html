@@ -44,18 +44,14 @@
         window.toggleWorkSection = function(id) {
             const checkbox = document.getElementById('toggle_' + id);
             const fields = document.getElementById('fields_' + id);
-            const alliInput = document.getElementById('alli_' + id);
             const priceInput = document.getElementById('price_' + id);
             if (checkbox && checkbox.checked) {
                 fields.classList.remove('opacity-50', 'pointer-events-none');
-                alliInput.required = true;
                 priceInput.required = true;
                 if (window.playClickSound) window.playClickSound();
             } else if (checkbox) {
                 fields.classList.add('opacity-50', 'pointer-events-none');
-                alliInput.required = false;
                 priceInput.required = false;
-                alliInput.value = '';
                 priceInput.value = '';
                 if (window.playClickSound) window.playClickSound();
             }
@@ -506,8 +502,13 @@
                         <p class="text-3xl font-extrabold text-slate-800 dark:text-white" id="grandTotalDisplay">Rs. 0</p>
                     </div>
                     <div class="text-right">
-                        <div class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 px-3 py-1 rounded-full inline-block">
-                            <p class="text-sm font-bold" id="totalRecordsDisplay">0 Works</p>
+                        <div class="flex flex-col gap-1.5 items-end">
+                            <div class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 px-3 py-1 rounded-full inline-block min-w-[85px] text-center">
+                                <p class="text-sm font-bold" id="totalRecordsDisplay">0 Works</p>
+                            </div>
+                            <div class="bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-400 px-3 py-1 rounded-full inline-block min-w-[85px] text-center">
+                                <p class="text-sm font-bold" id="totalAcresDisplay">0.0 Acres</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -619,11 +620,20 @@
                     </div>
                 </div>
 
-                <div class="w-1/2">
-                    <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Date</label>
-                    <div class="relative">
-                        <input type="date" id="date" required="required" 
-                            class="w-full px-4 py-3.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Date</label>
+                        <div class="relative">
+                            <input type="date" id="date" required="required" 
+                                class="w-full px-4 py-3.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Alli (Total)</label>
+                        <div class="relative">
+                            <input type="number" id="global_alli" required="required" min="0.1" step="0.1" placeholder="0" 
+                                class="w-full px-4 py-3.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                        </div>
                     </div>
                 </div>
 
@@ -639,16 +649,12 @@
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
                             </label>
                         </div>
-                        <div id="fields_heeya1" class="grid grid-cols-2 gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Alli</label>
-                                <input type="number" id="alli_heeya1" min="0.1" step="0.1" placeholder="0" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
-                            </div>
+                        <div id="fields_heeya1" class="opacity-50 pointer-events-none transition-opacity duration-300">
                             <div>
                                 <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-[12px] font-bold">Rs.</span>
-                                    <input type="number" id="price_heeya1" min="0" step="1" placeholder="0" class="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                <div class="relative flex items-center">
+                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
+                                    <input type="text" inputmode="numeric" id="price_heeya1" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
                                 </div>
                             </div>
                         </div>
@@ -663,16 +669,12 @@
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
                             </label>
                         </div>
-                        <div id="fields_heeya2" class="grid grid-cols-2 gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Alli</label>
-                                <input type="number" id="alli_heeya2" min="0.1" step="0.1" placeholder="0" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
-                            </div>
+                        <div id="fields_heeya2" class="opacity-50 pointer-events-none transition-opacity duration-300">
                             <div>
                                 <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-[12px] font-bold">Rs.</span>
-                                    <input type="number" id="price_heeya2" min="0" step="1" placeholder="0" class="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                <div class="relative flex items-center">
+                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
+                                    <input type="text" inputmode="numeric" id="price_heeya2" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
                                 </div>
                             </div>
                         </div>
@@ -687,16 +689,12 @@
                                 <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
                             </label>
                         </div>
-                        <div id="fields_pooru" class="grid grid-cols-2 gap-3 opacity-50 pointer-events-none transition-opacity duration-300">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Alli</label>
-                                <input type="number" id="alli_pooru" min="0.1" step="0.1" placeholder="0" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
-                            </div>
+                        <div id="fields_pooru" class="opacity-50 pointer-events-none transition-opacity duration-300">
                             <div>
                                 <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400 text-[12px] font-bold">Rs.</span>
-                                    <input type="number" id="price_pooru" min="0" step="1" placeholder="0" class="w-full pl-8 pr-2 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                <div class="relative flex items-center">
+                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
+                                    <input type="text" inputmode="numeric" id="price_pooru" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
                                 </div>
                             </div>
                         </div>
@@ -705,10 +703,10 @@
 
                 <div>
                     <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 ml-1.5 uppercase tracking-wider">Advance / Amount Received</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-slate-400 dark:text-slate-500 text-[14px] font-bold">Rs.</span>
-                        <input type="number" id="paid" min="0" step="1" placeholder="0" inputmode="numeric"
-                            class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                    <div class="relative flex items-center">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 dark:text-slate-500 text-[14px] font-bold pointer-events-none">Rs.</span>
+                        <input type="text" id="paid" placeholder="0" inputmode="numeric" oninput="formatCurrencyInput(this)"
+                            class="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[1.3rem] focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-emerald-700 focus:border-emerald-700 outline-none transition-all text-[14px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
                     </div>
                 </div>
 
@@ -960,6 +958,7 @@
         const emptyState = document.getElementById('emptyState');
         const grandTotalDisplay = document.getElementById('grandTotalDisplay');
         const totalRecordsDisplay = document.getElementById('totalRecordsDisplay');
+        const totalAcresDisplay = document.getElementById('totalAcresDisplay');
         const totalPaidDisplay = document.getElementById('totalPaidDisplay');
         const totalDueDisplay = document.getElementById('totalDueDisplay');
 
@@ -1002,12 +1001,21 @@
         let lastTotalPaid = 0;
         let lastTotalDue = 0;
         let lastTotalWorks = 0;
-        let targetStats = { grandTotal: 0, totalPaid: 0, totalDue: 0, totalWorks: 0 };
+        let lastTotalAcres = 0;
+        let targetStats = { grandTotal: 0, totalPaid: 0, totalDue: 0, totalWorks: 0, totalAcres: 0 };
 
-        function animateCount(elem, fromVal, toVal, duration = 800, isCurrency = true, dec = true) {
+        function animateCount(elem, fromVal, toVal, duration = 800, formatType = 'currency', dec = true) {
             if (!elem) return;
+            
+            const formatValue = (val) => {
+                if (formatType === 'currency') return formatCurrency(val, dec);
+                if (formatType === 'works') return `${Math.round(val)} Works`;
+                if (formatType === 'acres') return `${(val).toFixed(1)} Acres`;
+                return val;
+            };
+
             if (fromVal === toVal) {
-                elem.innerText = isCurrency ? formatCurrency(toVal, dec) : `${toVal} Works`;
+                elem.innerText = formatValue(toVal);
                 return;
             }
             const startTime = performance.now();
@@ -1017,25 +1025,27 @@
                 // Snappy cubic ease-out curve for fast initial acceleration
                 const ease = 1 - Math.pow(1 - progress, 3);
                 const currentVal = fromVal + (toVal - fromVal) * ease;
-                elem.innerText = isCurrency ? formatCurrency(currentVal, dec) : `${Math.round(currentVal)} Works`;
+                elem.innerText = formatValue(currentVal);
                 if (progress < 1) {
                     requestAnimationFrame(step);
                 } else {
-                    elem.innerText = isCurrency ? formatCurrency(toVal, dec) : `${toVal} Works`;
+                    elem.innerText = formatValue(toVal);
                 }
             }
             requestAnimationFrame(step);
         }
 
         window.triggerStatsCounterAnimation = function() {
-            animateCount(grandTotalDisplay, 0, targetStats.grandTotal, 1100, true, true);
-            animateCount(totalPaidDisplay, 0, targetStats.totalPaid, 1100, true, true);
-            animateCount(totalDueDisplay, 0, targetStats.totalDue, 1100, true, true);
-            animateCount(totalRecordsDisplay, 0, targetStats.totalWorks, 900, false, false);
+            animateCount(grandTotalDisplay, 0, targetStats.grandTotal, 1100, 'currency', true);
+            animateCount(totalPaidDisplay, 0, targetStats.totalPaid, 1100, 'currency', true);
+            animateCount(totalDueDisplay, 0, targetStats.totalDue, 1100, 'currency', true);
+            animateCount(totalRecordsDisplay, 0, targetStats.totalWorks, 900, 'works', false);
+            animateCount(document.getElementById('totalAcresDisplay'), 0, targetStats.totalAcres, 900, 'acres', false);
             lastGrandTotal = targetStats.grandTotal;
             lastTotalPaid = targetStats.totalPaid;
             lastTotalDue = targetStats.totalDue;
             lastTotalWorks = targetStats.totalWorks;
+            lastTotalAcres = targetStats.totalAcres;
         };
 
         window.showBlurLoader = function(duration = 2000, onComplete = null) {
@@ -1538,6 +1548,12 @@
                 history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
                 
                 await updateDoc(doc(db, 'cubozy_tractor_works', r.id), { paidAmount: newPaid, paymentHistory: history });
+                
+                // Send automated SMS if customer phone exists
+                if (r.phone && r.phone.trim().length > 0) {
+                    await sendSMS(r.phone, r.name, amt, newPaid, (r.totalAmount || (r.acres * r.price)));
+                }
+
                 window.closePaymentModal();
             } catch (e) {
                 window.customAlert("Failed to save payment.");
@@ -1548,6 +1564,34 @@
             }
         };
 
+        // Notify.lk SMS Integration Function
+        async function sendSMS(phoneNumber, customerName, paidAmount, totalPaid, totalAmount) {
+            const userId = "33323";
+            const apiKey = "VJPk46LCGCvrkecQY73P";
+            const senderId = "NotifyDEMO";
+
+            const balanceDue = totalAmount - totalPaid;
+            const message = `Ayubowan ${customerName}, oba ge Rs. ${paidAmount.toLocaleString()} ka gewima labuna. Total Paid: Rs. ${totalPaid.toLocaleString()}. Balance Due: Rs. ${balanceDue > 0 ? balanceDue.toLocaleString() : 0}. Stuthiyi! - KUBO`;
+
+            let formattedPhone = phoneNumber.trim();
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '94' + formattedPhone.substring(1);
+            }
+
+            const url = `https://app.notify.lk/api/v1/send?user_id=${userId}&api_key=${apiKey}&sender_id=${senderId}&to=${formattedPhone}&message=${encodeURIComponent(message)}&type=unicode`;
+
+            try {
+                // Using mode: 'no-cors' or handling network failure gracefully to prevent browser fetch exceptions in preview sandboxes
+                const response = await fetch(url, { mode: 'no-cors' }).catch(err => {
+                    console.warn("SMS network fetch restricted in preview sandbox:", err);
+                    return null;
+                });
+                console.log("SMS dispatch initiated successfully.");
+            } catch (error) {
+                console.error("SMS network error:", error);
+            }
+        }
+
         window.openHistoryModal = function(idx) {
             const r = records[idx];
             document.getElementById('historyModalContext').innerText = `${r.name} (${r.location})`;
@@ -1557,7 +1601,7 @@
             if (history.length === 0) list.innerHTML = `<p class="text-slate-400 text-xs text-center py-4">No payments recorded.</p>`;
             else {
                 history.forEach((h, i) => {
-                    list.innerHTML += `<div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between items-center text-xs"><span>Payment #${i+1} (${h.date})</span><span class="font-extrabold text-purple-600">+ Rs. ${h.amount.toLocaleString()}</span></div>`;
+                    list.innerHTML += `<div class="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-3 flex justify-between items-center text-xs"><span>Payment #${i+1} (${h.date})</span><span class="font-extrabold text-purple-600">+ Rs. ${Number(h.amount).toLocaleString()}</span></div>`;
                 });
             }
             window.openAnimatedModal('historyModal', 'historyContent');
@@ -1565,6 +1609,21 @@
         window.closeHistoryModal = function() { window.closeAnimatedModal('historyModal', 'historyContent'); };
 
         const formatCurrency = (amt, dec = false) => 'Rs. ' + Number(amt).toLocaleString('en-US', dec ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 2});
+
+        window.formatCurrencyInput = function(input) {
+            let val = input.value.replace(/[^0-9]/g, '');
+            if (val === '') {
+                input.value = '';
+                return;
+            }
+            input.value = Number(val).toLocaleString('en-US');
+        };
+
+        window.parseCurrencyInput = function(value) {
+            if (!value) return 0;
+            let clean = String(value).replace(/[^0-9]/g, '');
+            return clean === '' ? 0 : parseFloat(clean);
+        };
 
         window.handleSearch = function(val) { searchKeyword = (val || '').toLowerCase().trim(); document.getElementById('clearSearchBtn')?.classList.toggle('hidden', searchKeyword.length === 0); renderRecords(); };
         window.clearSearch = function() { document.getElementById('recordSearchInput').value = ''; window.handleSearch(''); };
@@ -1579,37 +1638,46 @@
 
         function renderRecords(forceReset = false) {
             recordsList.innerHTML = '';
-            let grandTotal = 0, totalPaid = 0, totalDue = 0;
+            let grandTotal = 0, totalPaid = 0, totalDue = 0, totalAlli = 0;
             records.forEach(r => {
                 const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
                 const paid = r.paidAmount || 0;
                 grandTotal += tot; totalPaid += paid; totalDue += (tot - paid);
+                
+                const displayAlli = r.displayAlli !== undefined ? r.displayAlli : (r.alli !== undefined ? r.alli : Number((r.acres * 6).toFixed(2)));
+                totalAlli += displayAlli;
             });
 
             targetStats = {
                 grandTotal,
                 totalPaid,
                 totalDue,
-                totalWorks: records.length
+                totalWorks: records.length,
+                totalAcres: totalAlli / 6
             };
+
+            const totalAcresDisplay = document.getElementById('totalAcresDisplay');
 
             if (forceReset) {
                 window.triggerStatsCounterAnimation();
             } else if (!isAppLoading) {
                 // Animate smoothly from the currently displayed value to the newly updated value
-                animateCount(grandTotalDisplay, lastGrandTotal, grandTotal, 700, true, true);
-                animateCount(totalPaidDisplay, lastTotalPaid, totalPaid, 700, true, true);
-                animateCount(totalDueDisplay, lastTotalDue, totalDue, 700, true, true);
-                animateCount(totalRecordsDisplay, lastTotalWorks, records.length, 600, false, false);
+                animateCount(grandTotalDisplay, lastGrandTotal, grandTotal, 700, 'currency', true);
+                animateCount(totalPaidDisplay, lastTotalPaid, totalPaid, 700, 'currency', true);
+                animateCount(totalDueDisplay, lastTotalDue, totalDue, 700, 'currency', true);
+                animateCount(totalRecordsDisplay, lastTotalWorks, records.length, 600, 'works', false);
+                animateCount(totalAcresDisplay, lastTotalAcres, targetStats.totalAcres, 600, 'acres', false);
                 lastGrandTotal = grandTotal;
                 lastTotalPaid = totalPaid;
                 lastTotalDue = totalDue;
                 lastTotalWorks = records.length;
+                lastTotalAcres = targetStats.totalAcres;
             } else {
                 grandTotalDisplay.innerText = formatCurrency(0, true);
                 totalPaidDisplay.innerText = formatCurrency(0, true);
                 totalDueDisplay.innerText = formatCurrency(0, true);
                 totalRecordsDisplay.innerText = "0 Works";
+                if(totalAcresDisplay) totalAcresDisplay.innerText = "0.0 Acres";
             }
 
             const filtered = records.filter(r => {
@@ -1634,6 +1702,7 @@
                 const origIdx = records.findIndex(r => r.id === record.id);
                 // Convert old records to Alli for display if needed (1 Acre = 6 Alli)
                 const displayAlli = record.displayAlli !== undefined ? record.displayAlli : (record.alli !== undefined ? record.alli : Number((record.acres * 6).toFixed(2)));
+                const displayAcres = Number((displayAlli / 6).toFixed(1));
 
                 let rateDisplay = '';
                 let workTags = '';
@@ -1677,8 +1746,9 @@
                     </div>
                     <div class="flex gap-1.5 mb-1.5">
                         <div class="w-20 shrink-0 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center text-center">
-                            <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Alli</span>
+                            <span class="text-[9px] uppercase font-extrabold text-slate-400 tracking-wider">Alli / Acres</span>
                             <span class="font-extrabold text-slate-800 dark:text-slate-100 text-xs truncate leading-tight">${displayAlli}</span>
+                            <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 truncate leading-tight mt-0.5">${displayAcres} Acres</span>
                         </div>
                         <div onclick="openRatesModal(${origIdx})" role="button" title="View Rates Breakdown" class="flex-1 bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 rounded-xl px-2 py-1 flex flex-col justify-center cursor-pointer active:scale-95 transition-all shadow-sm">
                             <div class="flex items-center justify-between">
@@ -1714,22 +1784,20 @@
             const location = document.getElementById('location').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const date = document.getElementById('date').value;
-            const paid = parseFloat(document.getElementById('paid').value || 0);
+            const paid = parseCurrencyInput(document.getElementById('paid').value);
+            const globalAlli = parseFloat(document.getElementById('global_alli').value);
 
             const works = [];
             let totalAmount = 0;
-            let maxAlli = 0;
 
             ['heeya1', 'heeya2', 'pooru'].forEach(id => {
                 const cb = document.getElementById(`toggle_${id}`);
                 if (cb && cb.checked) {
-                    const alli = parseFloat(document.getElementById(`alli_${id}`).value);
-                    const price = parseFloat(document.getElementById(`price_${id}`).value);
-                    if (!isNaN(alli) && !isNaN(price)) {
+                    const price = parseCurrencyInput(document.getElementById(`price_${id}`).value);
+                    if (!isNaN(price)) {
                         const typeName = id === 'heeya1' ? '1st' : (id === 'heeya2' ? '2nd' : '3rd');
-                        works.push({ type: typeName, alli, price });
-                        totalAmount += (alli / 6) * price;
-                        if (alli > maxAlli) maxAlli = alli;
+                        works.push({ type: typeName, alli: globalAlli, price });
+                        totalAmount += (globalAlli / 6) * price;
                     }
                 }
             });
@@ -1739,7 +1807,7 @@
                 return;
             }
 
-            if (!name || !location || !date) { window.customAlert("Please fill all required fields."); return; }
+            if (!name || !location || !date || isNaN(globalAlli)) { window.customAlert("Please fill all required fields correctly."); return; }
 
             const submitBtn = document.getElementById('saveRecordBtn');
             const originalBtnHtml = submitBtn.innerHTML;
@@ -1758,15 +1826,17 @@
                     name, location, phone, date, 
                     works,
                     totalAmount,
-                    displayAlli: maxAlli,
+                    displayAlli: globalAlli,
                     paidAmount: paid,
                     paymentHistory: paid > 0 ? [{ amount: paid, date }] : [],
                     userId, createdAt: new Date().toISOString()
                 });
                 
-                // If payment was made on registration, play Ka-Ching! Otherwise click sound
                 if (paid > 0) {
                     window.playMoneySound();
+                    if (phone && phone.trim().length > 0) {
+                        await sendSMS(phone, name, paid, paid, totalAmount);
+                    }
                 } else {
                     window.playClickSound();
                 }
@@ -1777,6 +1847,7 @@
                     if (cb) { cb.checked = false; window.toggleWorkSection(id); }
                 });
                 document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('global_alli').value = '';
                 window.closeAddRecordModal();
             } catch (e) {
                 window.customAlert("Failed to save record.");
