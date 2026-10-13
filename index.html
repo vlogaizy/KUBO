@@ -38,6 +38,7 @@
         };
         window.openSettingsModal = window.openSettingsModal || function() {};
         window.closeSettingsModal = window.closeSettingsModal || function() {};
+        window.openAboutModal = window.openAboutModal || function() {};
         window.switchAuthMode = window.switchAuthMode || function() {};
         window.openForgotPasswordModal = window.openForgotPasswordModal || function() {};
         
@@ -890,7 +891,7 @@
                 <h2 class="text-[20px] font-extrabold text-slate-800 dark:text-white tracking-tight">Settings</h2>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar pb-2">
                 <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-100 dark:border-slate-700/60 transition-colors">
                     <div>
                         <h4 class="text-sm font-bold text-slate-800 dark:text-white">Dark Mode</h4>
@@ -900,6 +901,32 @@
                         <span id="settingsSwitchThumb" class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-sm translate-x-[24px]"></span>
                     </button>
                 </div>
+                
+                <button onclick="openSMSSettingsModal()" class="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 rounded-2xl border border-slate-100 dark:border-slate-700/60 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center transition-colors">
+                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white transition-colors">Customize SMS</h4>
+                            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">Edit auto-reply message templates</p>
+                        </div>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
+                <button onclick="openAboutModal()" class="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 rounded-2xl border border-slate-100 dark:border-slate-700/60 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center transition-colors">
+                            <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white transition-colors">About</h4>
+                            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">App version and information</p>
+                        </div>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
 
                 <button onclick="handleLogoutFromSettings()" class="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-red-50 dark:bg-slate-800/80 dark:hover:bg-red-950/30 rounded-2xl border border-slate-100 hover:border-red-200 dark:border-slate-700/60 dark:hover:border-red-900/50 transition-colors group">
                     <div class="flex items-center gap-3">
@@ -914,6 +941,89 @@
                     <svg class="w-4 h-4 text-slate-400 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
+        </div>
+    </div>
+    
+    <!-- SMS Templates Modal -->
+    <div id="smsSettingsModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div id="smsSettingsContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[400px] p-6 relative transform transition-all border border-white/50 max-h-[95vh] flex flex-col bg-slate-50 dark:bg-slate-900 mx-auto">
+            <button onclick="closeSMSSettingsModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-200/50 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="flex items-center gap-3.5 mb-5 border-b border-slate-200 dark:border-slate-800 pb-3 shrink-0">
+                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                </div>
+                <h2 class="text-[18px] font-extrabold text-slate-800 dark:text-white tracking-tight">SMS Templates</h2>
+            </div>
+            
+            <div class="mb-3 shrink-0 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/50">
+                <p class="text-[10px] font-bold text-blue-800 dark:text-blue-300 mb-1.5 uppercase tracking-wider">Available Tags (Copy & Paste):</p>
+                <div class="flex flex-wrap gap-1.5">
+                    <code class="text-[10px] bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-mono">[NAME]</code>
+                    <code class="text-[10px] bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-mono">[PAID]</code>
+                    <code class="text-[10px] bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-mono">[TOTAL]</code>
+                    <code class="text-[10px] bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-mono">[DUE]</code>
+                </div>
+            </div>
+
+            <div class="overflow-y-auto no-scrollbar flex-1 space-y-4 pr-1">
+                <!-- 1. New Work SMS -->
+                <div>
+                    <label class="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 mb-1 ml-1 uppercase tracking-wider">1. New Work (With Advance)</label>
+                    <textarea id="smsTemplateNewWork" rows="3" class="w-full p-3 bg-white dark:bg-[#182232] border border-slate-200 dark:border-[#2a374a] rounded-xl focus:bg-white dark:focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-700 dark:text-slate-200 shadow-sm resize-none"></textarea>
+                </div>
+                
+                <!-- 2. Payment Installment SMS -->
+                <div>
+                    <label class="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 mb-1 ml-1 uppercase tracking-wider">2. Payment (Installment)</label>
+                    <textarea id="smsTemplatePayment" rows="3" class="w-full p-3 bg-white dark:bg-[#182232] border border-slate-200 dark:border-[#2a374a] rounded-xl focus:bg-white dark:focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-700 dark:text-slate-200 shadow-sm resize-none"></textarea>
+                </div>
+
+                <!-- 3. Fully Paid SMS -->
+                <div>
+                    <label class="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 mb-1 ml-1 uppercase tracking-wider">3. Payment Complete (Balance 0)</label>
+                    <textarea id="smsTemplateComplete" rows="3" class="w-full p-3 bg-white dark:bg-[#182232] border border-slate-200 dark:border-[#2a374a] rounded-xl focus:bg-white dark:focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-700 dark:text-slate-200 shadow-sm resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0 flex gap-2">
+                <button onclick="resetSMSTemplates()" class="flex-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl active:bg-slate-300 dark:active:bg-slate-700 transition-colors text-sm">Reset</button>
+                <button onclick="saveSMSTemplates()" id="saveSMSBtn" class="flex-[2] bg-gradient-to-r from-blue-700 to-blue-600 text-white font-bold py-3 rounded-xl active:from-blue-800 active:to-blue-700 transition-colors shadow-md shadow-blue-900/20 text-sm flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                    Save Templates
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div id="aboutContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[320px] p-6 relative transform transition-all border border-white/50 flex flex-col items-center bg-white dark:bg-slate-900 mx-auto text-center">
+            <button onclick="closeAboutModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <img src="https://raw.githubusercontent.com/vlogaizy/KUBO/main/KUBO_LOGO.png" alt="KUBO Logo" class="h-16 w-auto object-contain rounded-xl mb-3 mt-2 shadow-sm" draggable="false" />
+            <h3 class="text-xl font-extrabold text-slate-800 dark:text-white tracking-tight mb-1">About</h3>
+            <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-4 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full border border-emerald-100 dark:border-emerald-800/50">Version 1.2.0</p>
+            
+            <p class="text-[12px] font-medium text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+                Smart tracker for tractor works, designed for efficiency and cloud-synced reliability.
+            </p>
+            
+            <div class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 rounded-xl p-3 mb-2 flex items-center justify-between text-left shadow-sm">
+                <div>
+                    <h4 class="text-[11px] font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-0.5">Developed By</h4>
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100">Lasindu Bineesha</p>
+                </div>
+                <div class="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center shadow-inner">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                </div>
+            </div>
+            
+            <p class="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 mt-2 uppercase tracking-wide">&copy; 2026 KUBO</p>
         </div>
     </div>
 
@@ -939,7 +1049,8 @@
             deleteDoc, 
             onSnapshot, 
             collection, 
-            setDoc
+            setDoc,
+            getDoc
         } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
         let records = [];
@@ -953,6 +1064,15 @@
         let unsubscribeRecords = null;
         let isFirstAuthCheck = true;
         let isAppLoading = true;
+        
+        // Default SMS Templates
+        const defaultSMSTemplates = {
+            newWork: "Ayubowan [NAME], oba ge nawa wada satahana saha Rs. [PAID] ka aththikaram mudala labuna. Total: Rs. [TOTAL], Balance: Rs. [DUE]. Stuthiyi! - KUBO",
+            payment: "Ayubowan [NAME], oba ge Rs. [PAID] ka gewima labuna. Total: Rs. [TOTAL], Balance: Rs. [DUE]. Stuthiyi! - KUBO",
+            complete: "Ayubowan [NAME], oba ge Rs. [PAID] ka awasan gewima labuna. Oba ge sampoorna bilihpatha (Rs. [TOTAL]) piyawa atha. Stuthiyi! - KUBO"
+        };
+        
+        let currentSMSTemplates = { ...defaultSMSTemplates };
 
         const form = document.getElementById('recordForm');
         const recordsList = document.getElementById('recordsList');
@@ -1156,6 +1276,88 @@
         window.closeSettingsModal = function() {
             window.closeAnimatedModal('settingsModal', 'settingsContent');
         };
+        
+        window.openSMSSettingsModal = function() {
+            document.getElementById('smsTemplateNewWork').value = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
+            document.getElementById('smsTemplatePayment').value = currentSMSTemplates.payment || defaultSMSTemplates.payment;
+            document.getElementById('smsTemplateComplete').value = currentSMSTemplates.complete || defaultSMSTemplates.complete;
+            window.closeSettingsModal();
+            setTimeout(() => {
+                window.openAnimatedModal('smsSettingsModal', 'smsSettingsContent');
+            }, 300);
+        };
+        
+        window.closeSMSSettingsModal = function() {
+            window.closeAnimatedModal('smsSettingsModal', 'smsSettingsContent');
+        };
+        
+        window.openAboutModal = function() {
+            window.closeSettingsModal();
+            setTimeout(() => {
+                window.openAnimatedModal('aboutModal', 'aboutContent');
+            }, 300);
+        };
+
+        window.closeAboutModal = function() {
+            window.closeAnimatedModal('aboutModal', 'aboutContent');
+        };
+        
+        window.resetSMSTemplates = function() {
+            document.getElementById('smsTemplateNewWork').value = defaultSMSTemplates.newWork;
+            document.getElementById('smsTemplatePayment').value = defaultSMSTemplates.payment;
+            document.getElementById('smsTemplateComplete').value = defaultSMSTemplates.complete;
+        };
+        
+        window.saveSMSTemplates = async function() {
+            const btn = document.getElementById('saveSMSBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = 'Saving...';
+            btn.disabled = true;
+            
+            const templates = {
+                newWork: document.getElementById('smsTemplateNewWork').value.trim() || defaultSMSTemplates.newWork,
+                payment: document.getElementById('smsTemplatePayment').value.trim() || defaultSMSTemplates.payment,
+                complete: document.getElementById('smsTemplateComplete').value.trim() || defaultSMSTemplates.complete
+            };
+            
+            try {
+                await setDoc(doc(db, 'kubo_settings', 'sms_templates'), templates);
+                currentSMSTemplates = templates;
+                btn.innerHTML = 'Saved!';
+                setTimeout(() => {
+                    window.closeSMSSettingsModal();
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    }, 300);
+                }, 800);
+            } catch(e) {
+                console.error("Error saving templates:", e);
+                window.customAlert("Failed to save templates.");
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        };
+        
+        async function loadSettings() {
+            try {
+                // Load Theme
+                onSnapshot(doc(db, 'kubo_settings', 'theme'), (snap) => {
+                    if (snap.exists() && typeof snap.data().darkMode === 'boolean') {
+                        applyTheme(snap.data().darkMode);
+                    }
+                });
+                
+                // Load SMS Templates
+                onSnapshot(doc(db, 'kubo_settings', 'sms_templates'), (snap) => {
+                    if (snap.exists()) {
+                        currentSMSTemplates = { ...defaultSMSTemplates, ...snap.data() };
+                    }
+                });
+            } catch (e) {
+                console.error("Error loading settings:", e);
+            }
+        }
 
         window.handleLogoutFromSettings = function() {
             window.closeSettingsModal();
@@ -1306,6 +1508,7 @@
             if (user) {
                 userId = user.uid;
                 initCloudSync();
+                loadSettings();
 
                 if (isFirstAuthCheck) {
                     isFirstAuthCheck = false;
@@ -1577,7 +1780,11 @@
                 
                 // Send automated SMS if customer phone exists
                 if (r.phone && r.phone.trim().length > 0) {
-                    await sendSMS(r.phone, r.name, amt, newPaid, (r.totalAmount || (r.acres * r.price)));
+                    const totalAmt = (r.totalAmount || (r.acres * r.price));
+                    const currentDue = totalAmt - newPaid;
+                    const isFullyPaid = currentDue <= 0;
+                    
+                    await sendSMS(r.phone, r.name, amt, newPaid, totalAmt, currentDue, isFullyPaid ? 'complete' : 'payment');
                 }
 
                 window.closePaymentModal();
@@ -1591,13 +1798,27 @@
         };
 
         // Notify.lk SMS Integration Function
-        async function sendSMS(phoneNumber, customerName, paidAmount, totalPaid, totalAmount) {
+        async function sendSMS(phoneNumber, customerName, paidAmountThisTime, totalPaidTillNow, totalAmount, balanceDue, templateType = 'payment') {
             const userId = "33323";
             const apiKey = "VJPk46LCGCvrkecQY73P";
             const senderId = "NotifyDEMO";
 
-            const balanceDue = totalAmount - totalPaid;
-            const message = `Ayubowan ${customerName}, oba ge Rs. ${paidAmount.toLocaleString()} ka gewima labuna. Total Paid: Rs. ${totalPaid.toLocaleString()}. Balance Due: Rs. ${balanceDue > 0 ? balanceDue.toLocaleString() : 0}. Stuthiyi! - KUBO`;
+            // Select template based on context
+            let rawTemplate = defaultSMSTemplates.payment;
+            if (templateType === 'newWork') {
+                rawTemplate = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
+            } else if (templateType === 'complete') {
+                rawTemplate = currentSMSTemplates.complete || defaultSMSTemplates.complete;
+            } else {
+                rawTemplate = currentSMSTemplates.payment || defaultSMSTemplates.payment;
+            }
+
+            // Replace placeholder tags with actual values
+            const message = rawTemplate
+                .replace(/\[NAME\]/g, customerName || 'Customer')
+                .replace(/\[PAID\]/g, paidAmountThisTime.toLocaleString())
+                .replace(/\[TOTAL\]/g, totalAmount.toLocaleString())
+                .replace(/\[DUE\]/g, balanceDue > 0 ? balanceDue.toLocaleString() : "0");
 
             let formattedPhone = phoneNumber.trim();
             if (formattedPhone.startsWith('0')) {
@@ -1608,11 +1829,11 @@
 
             try {
                 // Using mode: 'no-cors' or handling network failure gracefully to prevent browser fetch exceptions in preview sandboxes
-                const response = await fetch(url, { mode: 'no-cors' }).catch(err => {
+                await fetch(url, { mode: 'no-cors' }).catch(err => {
                     console.warn("SMS network fetch restricted in preview sandbox:", err);
                     return null;
                 });
-                console.log("SMS dispatch initiated successfully.");
+                console.log("SMS dispatch initiated successfully:", templateType);
             } catch (error) {
                 console.error("SMS network error:", error);
             }
@@ -1861,7 +2082,8 @@
                 if (paid > 0) {
                     window.playMoneySound();
                     if (phone && phone.trim().length > 0) {
-                        await sendSMS(phone, name, paid, paid, totalAmount);
+                        const currentDue = totalAmount - paid;
+                        await sendSMS(phone, name, paid, paid, totalAmount, currentDue, 'newWork');
                     }
                 } else {
                     window.playClickSound();
