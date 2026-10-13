@@ -39,6 +39,8 @@
         window.openSettingsModal = window.openSettingsModal || function() {};
         window.closeSettingsModal = window.closeSettingsModal || function() {};
         window.openAboutModal = window.openAboutModal || function() {};
+        window.openProfileModal = window.openProfileModal || function() {};
+        window.closeProfileModal = window.closeProfileModal || function() {};
         window.switchAuthMode = window.switchAuthMode || function() {};
         window.openForgotPasswordModal = window.openForgotPasswordModal || function() {};
         
@@ -59,8 +61,8 @@
         };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    
     <script>
-        // Native Web Audio & Mobile Haptic Engine (Zero external dependencies)
         let webAudioCtx = null;
 
         function getAudioContext() {
@@ -76,7 +78,6 @@
             return webAudioCtx;
         }
 
-        // Unlock audio on the very first touch/click anywhere on screen
         const unlockAudioOnGesture = () => {
             const ctx = getAudioContext();
             if (ctx && ctx.state === 'suspended') {
@@ -87,7 +88,6 @@
         window.addEventListener('touchstart', unlockAudioOnGesture, { passive: true });
         window.addEventListener('click', unlockAudioOnGesture, { passive: true });
 
-        // Multi-level Haptic feedback
         window.triggerHaptic = function(type = 'light') {
             try {
                 if ('vibrate' in navigator) {
@@ -102,7 +102,6 @@
             } catch (e) {}
         };
 
-        // UI Crisp Click Pop Sound
         window.playClickSound = function() {
             window.triggerHaptic('light');
             try {
@@ -114,7 +113,6 @@
                 const gain = ctx.createGain();
                 
                 osc.type = 'sine';
-                // Snappy pitch slide from 820Hz down to 140Hz in 35ms gives a modern iOS UI tap
                 osc.frequency.setValueAtTime(820, now);
                 osc.frequency.exponentialRampToValueAtTime(140, now + 0.035);
                 
@@ -129,7 +127,6 @@
             } catch (e) {}
         };
 
-        // Realistic Cash Register "Ka-Ching" & Shimmering Coins Sound
         window.playMoneySound = function() {
             window.triggerHaptic('money');
             try {
@@ -137,7 +134,6 @@
                 if (!ctx) return;
                 const now = ctx.currentTime;
                 
-                // 1. Cash register mechanical latch / lever slide
                 const leverOsc = ctx.createOscillator();
                 const leverGain = ctx.createGain();
                 leverOsc.type = 'triangle';
@@ -150,7 +146,6 @@
                 leverOsc.start(now);
                 leverOsc.stop(now + 0.08);
 
-                // 2. High brilliant bell chord sequence: F#6, A#6, C#7, F#7 (Classic Ka-Ching chime!)
                 const chimeNotes = [1480, 1864, 2217, 2960];
                 chimeNotes.forEach((freq, idx) => {
                     const noteStart = now + 0.05 + (idx * 0.035);
@@ -170,7 +165,6 @@
                     osc.stop(noteStart + 0.68);
                 });
 
-                // 3. Shimmering metallic coins drop
                 [3100, 3650, 4400].forEach((freq, idx) => {
                     const coinStart = now + 0.18 + (idx * 0.07);
                     const coinOsc = ctx.createOscillator();
@@ -187,11 +181,9 @@
             } catch (e) {}
         };
 
-        // Global automatic click sound & haptics for all buttons, tabs, & clickable elements
         document.addEventListener('pointerdown', (e) => {
             const targetBtn = e.target.closest('button, a, input[type="submit"], [role="button"]');
             if (targetBtn) {
-                // If the button is specifically intended to trigger the money sound, skip click pop
                 if (targetBtn.id === 'savePaymentConfirmBtn') {
                     return;
                 }
@@ -313,7 +305,6 @@
             animation: modeSwitchFadeSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Ambient Background Glow Animations */
         @keyframes bgFloat1 {
             0%, 100% { transform: translate(0px, 0px) scale(1); }
             33% { transform: translate(45px, -40px) scale(1.12); }
@@ -336,38 +327,20 @@
             50% { transform: rotate(1deg) scale(1.03); }
         }
 
-        .anim-orb-1 {
-            animation: bgFloat1 18s ease-in-out infinite;
-        }
-
-        .anim-orb-2 {
-            animation: bgFloat2 22s ease-in-out infinite;
-        }
-
-        .anim-orb-3 {
-            animation: bgFloat3 26s ease-in-out infinite;
-        }
-
-        .anim-sway {
-            animation: gentleSway 7s ease-in-out infinite;
-            transform-origin: bottom right;
-        }
-
-        .text-pop {
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 10px rgba(6, 78, 59, 0.85);
-        }
+        .anim-orb-1 { animation: bgFloat1 18s ease-in-out infinite; }
+        .anim-orb-2 { animation: bgFloat2 22s ease-in-out infinite; }
+        .anim-orb-3 { animation: bgFloat3 26s ease-in-out infinite; }
+        .anim-sway { animation: gentleSway 7s ease-in-out infinite; transform-origin: bottom right; }
     </style>
 </head>
 <body class="min-h-screen flex justify-center items-start sm:items-center py-2 sm:py-6 px-1.5 sm:px-0 selection:bg-emerald-200 dark:selection:bg-emerald-700/50 text-slate-800 dark:text-slate-200 relative overflow-x-hidden">
 
-    <!-- Ambient Animated Background Glow Orbs -->
     <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-400/25 dark:bg-emerald-600/15 blur-[95px] anim-orb-1"></div>
         <div class="absolute top-1/3 -right-28 w-96 h-96 rounded-full bg-teal-400/20 dark:bg-emerald-500/10 blur-[105px] anim-orb-2"></div>
         <div class="absolute -bottom-24 left-1/4 w-[28rem] h-[28rem] rounded-full bg-emerald-300/25 dark:bg-teal-900/20 blur-[110px] anim-orb-3"></div>
     </div>
 
-    <!-- Circular Spinner Loading Screen with Frosted Blur Background -->
     <div id="startupLoader" class="fixed inset-0 z-[300] flex flex-col items-center justify-center bg-slate-900/20 dark:bg-black/40 backdrop-blur-lg transition-opacity duration-700 pointer-events-auto">
         <div class="relative flex items-center justify-center">
             <div class="w-16 h-16 rounded-full bg-emerald-500/20 blur-xl absolute pointer-events-none"></div>
@@ -375,7 +348,6 @@
         </div>
     </div>
 
-    <!-- Login screen starts active and visible so the home page never flashes on startup -->
     <div id="loginScreen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 transition-all duration-500 opacity-100">
         <div class="absolute top-0 w-full h-1/2 bg-gradient-to-br from-emerald-950 via-emerald-900 to-green-950 rounded-b-[3rem] shadow-xl"></div>
         
@@ -443,11 +415,8 @@
         <div class="pointer-events-none absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-black/25 via-black/5 to-transparent z-30 rounded-t-[3.8rem]"></div>
         
         <header class="mx-5 mt-5 bg-gradient-to-br from-emerald-950 via-emerald-900 to-green-950 text-white p-5 rounded-[2.5rem] shadow-xl shadow-emerald-950/20 z-10 relative overflow-hidden border border-emerald-800/40">
-            <!-- Stylized Paddy Grass & Rice Sheaves SVG Graphic with gentle breeze animation -->
             <svg class="absolute -bottom-6 -right-6 w-48 h-48 text-emerald-200 dark:text-emerald-400 opacity-20 pointer-events-none transform -rotate-3 transition-opacity anim-sway" viewBox="0 0 200 200" fill="currentColor">
-                <!-- Paddy Stalk 1 & Grains (Arching left) -->
                 <path d="M190 200 C 170 140, 130 90, 80 70 C 65 65, 50 68, 40 76 C 45 78, 60 76, 75 80 C 120 95, 160 140, 180 200 Z" />
-                <!-- Paddy grains along stalk 1 -->
                 <ellipse cx="44" cy="74" rx="7" ry="3.5" transform="rotate(-30 44 74)" />
                 <ellipse cx="56" cy="69" rx="7" ry="3.5" transform="rotate(-15 56 69)" />
                 <ellipse cx="69" cy="67" rx="7" ry="3.5" transform="rotate(0 69 67)" />
@@ -456,10 +425,7 @@
                 <ellipse cx="112" cy="81" rx="8" ry="4" transform="rotate(40 112 81)" />
                 <ellipse cx="127" cy="92" rx="8" ry="4" transform="rotate(52 127 92)" />
                 <ellipse cx="141" cy="106" rx="8" ry="4" transform="rotate(62 141 106)" />
-                
-                <!-- Paddy Stalk 2 & Grains (Gracefully curved higher) -->
                 <path d="M195 200 C 180 120, 145 60, 100 30 C 85 20, 68 20, 55 27 C 62 30, 78 28, 92 37 C 130 65, 165 120, 185 200 Z" />
-                <!-- Grains along stalk 2 -->
                 <ellipse cx="58" cy="27" rx="7" ry="3.5" transform="rotate(-40 58 27)" />
                 <ellipse cx="70" cy="23" rx="7.5" ry="3.5" transform="rotate(-20 70 23)" />
                 <ellipse cx="84" cy="23" rx="7.5" ry="3.8" transform="rotate(-5 84 23)" />
@@ -467,8 +433,6 @@
                 <ellipse cx="114" cy="35" rx="8" ry="4" transform="rotate(30 114 35)" />
                 <ellipse cx="129" cy="46" rx="8" ry="4" transform="rotate(42 129 46)" />
                 <ellipse cx="144" cy="60" rx="8" ry="4" transform="rotate(55 144 60)" />
-
-                <!-- Swaying Long Paddy Blades / Leaves -->
                 <path d="M185 200 C 150 140, 100 110, 30 105 C 80 125, 130 155, 175 200 Z" />
                 <path d="M180 200 C 135 150, 80 130, 15 140 C 65 150, 120 170, 170 200 Z" />
                 <path d="M190 200 C 175 110, 140 50, 105 10 C 125 50, 155 120, 182 200 Z" />
@@ -478,14 +442,20 @@
             <div class="relative z-10 flex justify-between items-center pointer-events-none">
                 <div class="flex flex-col">
                     <img src="https://raw.githubusercontent.com/vlogaizy/KUBO/main/KUBO_LOGO.png" alt="KUBO Logo" draggable="false" class="h-20 w-auto object-contain rounded-xl mb-1 select-none pointer-events-none" />
-                    <!-- Subtitle text with a lighter, softer emerald tint -->
                     <p class="text-emerald-200/80 text-xs font-semibold pl-2 tracking-wide">Tractor works and earnings.</p>
                 </div>
                 <div class="flex items-center gap-2 relative z-40 pointer-events-auto">
-                    <!-- Settings Button -->
+                    <button onclick="openProfileModal()" id="profileBtn" aria-label="Open Profile"
+                        class="bg-white hover:bg-slate-100 text-emerald-950 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white active:scale-95 transition-all shadow-md flex items-center justify-center overflow-hidden w-11 h-11 rounded-full p-0.5">
+                        <div id="headerProfileAvatar" class="w-full h-full flex items-center justify-center rounded-full overflow-hidden">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                    </button>
                     <button onclick="openSettingsModal()" id="settingsBtn" aria-label="Open Settings"
-                        class="bg-white hover:bg-slate-100 text-emerald-950 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white active:scale-95 p-3 rounded-2xl transition-all shadow-md">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        class="bg-white hover:bg-slate-100 text-emerald-950 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white active:scale-95 transition-all shadow-md w-11 h-11 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
@@ -494,7 +464,7 @@
             </div>
         </header>
 
-        <main class="flex-1 px-5 z-20 mt-4 space-y-6">
+        <main class="flex-1 px-5 z-20 mt-4 space-y-4">
             
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-green-900/5 border border-slate-100 dark:border-slate-700/60 p-5 transform transition-colors duration-300">
                 <div class="flex justify-between items-center mb-4">
@@ -525,23 +495,22 @@
                 </div>
             </div>
 
-            <!-- Compact Driver Settlement Card -->
-            <button onclick="openDriverModal()" class="w-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 rounded-2xl shadow-lg shadow-indigo-900/5 border border-slate-100 dark:border-slate-700/60 px-3.5 py-3 text-left transition-all active:scale-[0.98] group flex items-center justify-between">
+            <button onclick="openDriverModal()" class="w-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 rounded-2xl shadow-lg shadow-indigo-900/5 border border-slate-100 dark:border-slate-700/60 px-3 py-2 text-left transition-all active:scale-[0.98] group flex items-center justify-between">
                 <div class="flex items-center gap-2.5 min-w-0">
                     <div class="w-7 h-7 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center shadow-sm shrink-0">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     </div>
                     <div class="min-w-0">
                         <h3 class="text-slate-400 dark:text-slate-400 text-[9px] font-bold uppercase tracking-widest mb-0">Driver Settlement</h3>
-                        <p class="text-base font-extrabold text-slate-800 dark:text-white leading-tight truncate" id="driverTotalDisplay">Rs. 0</p>
+                        <p class="text-sm font-extrabold text-slate-800 dark:text-white leading-tight truncate" id="driverTotalDisplay">Rs. 0</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 shrink-0">
+                <div class="flex items-center gap-2.5 shrink-0">
                     <div class="flex flex-col items-end text-right">
-                        <div class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Paid: <span id="driverCardPaidDisplay" class="font-extrabold">Rs. 0</span></div>
-                        <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400">Due: <span id="driverCardDueDisplay" class="font-extrabold">Rs. 0</span></div>
+                        <div class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400">Paid: <span id="driverCardPaidDisplay" class="font-extrabold">Rs. 0</span></div>
+                        <div class="text-[9px] font-bold text-amber-600 dark:text-amber-400">Due: <span id="driverCardDueDisplay" class="font-extrabold">Rs. 0</span></div>
                     </div>
-                    <div class="bg-indigo-50 dark:bg-indigo-950/50 p-2 rounded-full text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform">
+                    <div class="bg-indigo-50 dark:bg-indigo-950/50 p-1.5 rounded-full text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </div>
                 </div>
@@ -562,7 +531,7 @@
                 </div>
             </button>
 
-            <div class="mt-6 pb-4">
+            <div class="mt-4 pb-4">
                 <div class="flex justify-between items-center mb-4 px-1 gap-3">
                     <div class="shrink-0">
                         <h2 class="text-xl font-extrabold text-slate-800 dark:text-white">Recent Works</h2>
@@ -661,7 +630,6 @@
                 <div class="space-y-3">
                     <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 ml-1.5 uppercase tracking-wider mb-1">Work Types (Select needed)</label>
                     
-                    <!-- 1st -->
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3.5 border border-slate-100 dark:border-slate-700/60">
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3">
@@ -682,7 +650,6 @@
                         </div>
                     </div>
 
-                    <!-- 2nd -->
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3.5 border border-slate-100 dark:border-slate-700/60">
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3">
@@ -703,7 +670,6 @@
                         </div>
                     </div>
 
-                    <!-- 3rd -->
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3.5 border border-slate-100 dark:border-slate-700/60">
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3">
@@ -743,8 +709,8 @@
     </div>
 
     <div id="alertModal" class="fixed inset-0 z-[400] hidden flex items-center justify-center p-4 transition-all duration-300">
-        <div id="alertContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-xs w-full p-5 text-center transform transition-all border border-white/50">
-            <div class="w-11 h-11 bg-amber-100 dark:bg-amber-950/60 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-3">
+        <div id="alertContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-xs w-full p-5 text-center transform transition-all border border-white/50 flex flex-col items-center">
+            <div class="w-11 h-11 bg-amber-100 dark:bg-amber-950/60 text-amber-500 rounded-full flex items-center justify-center mb-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-1">Notice</h3>
@@ -874,7 +840,6 @@
         </div>
     </div>
 
-    <!-- Rates Breakdown Modal -->
     <div id="ratesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="ratesContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-sm w-full p-5 relative transform transition-all border border-white/50 max-h-[80vh] flex flex-col mx-auto">
             <button onclick="closeRatesModal()" class="absolute top-4 right-4 w-7 h-7 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
@@ -897,7 +862,6 @@
         </div>
     </div>
 
-    <!-- Driver Balance & Settlement Modal -->
     <div id="driverModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="driverModalContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-sm w-full p-5 relative transform transition-all border border-white/50 max-h-[85vh] flex flex-col mx-auto">
             <button onclick="closeDriverModal()" class="absolute top-4 right-4 w-7 h-7 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
@@ -911,7 +875,7 @@
             
             <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 rounded-2xl p-4 mb-4 shrink-0 space-y-2">
                 <div class="flex justify-between items-center text-xs">
-                    <span class="font-bold text-slate-600 dark:text-slate-300">Total Share</span>
+                    <span class="font-bold text-slate-600 dark:text-slate-300">Total Share (20%)</span>
                     <span id="driverModalTotal" class="font-extrabold text-slate-800 dark:text-white">Rs. 0</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
@@ -924,7 +888,6 @@
                 </div>
             </div>
 
-            <!-- Pay Driver Input Form -->
             <div class="space-y-3 mb-4 shrink-0 bg-slate-50 dark:bg-slate-800/80 p-3 rounded-2xl border border-slate-100 dark:border-slate-700/60">
                 <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pay Driver Amount</label>
                 <div class="relative flex items-center">
@@ -937,7 +900,6 @@
                 </button>
             </div>
 
-            <!-- History List -->
             <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 shrink-0">Payment History</label>
             <div id="driverHistoryList" class="space-y-2 mb-4 overflow-y-auto no-scrollbar flex-1 min-h-[80px]"></div>
 
@@ -985,7 +947,6 @@
                     <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
 
-                <!-- Support Button -->
                 <button onclick="openSupportModal()" class="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 rounded-2xl border border-slate-100 dark:border-slate-700/60 transition-colors group">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center transition-colors">
@@ -1028,7 +989,6 @@
         </div>
     </div>
     
-    <!-- SMS Templates Modal -->
     <div id="smsSettingsModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="smsSettingsContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[400px] p-6 relative transform transition-all border border-white/50 max-h-[95vh] flex flex-col bg-slate-50 dark:bg-slate-900 mx-auto">
             <button onclick="closeSMSSettingsModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-200/50 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
@@ -1053,19 +1013,16 @@
             </div>
 
             <div class="overflow-y-auto no-scrollbar flex-1 space-y-4 pr-1">
-                <!-- 1. New Work SMS -->
                 <div>
                     <label class="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 mb-1 ml-1 uppercase tracking-wider">1. New Work (With Advance)</label>
                     <textarea id="smsTemplateNewWork" rows="3" class="w-full p-3 bg-white dark:bg-[#182232] border border-slate-200 dark:border-[#2a374a] rounded-xl focus:bg-white dark:focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-700 dark:text-slate-200 shadow-sm resize-none"></textarea>
                 </div>
                 
-                <!-- 2. Payment Installment SMS -->
                 <div>
                     <label class="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 mb-1 ml-1 uppercase tracking-wider">2. Payment (Installment)</label>
                     <textarea id="smsTemplatePayment" rows="3" class="w-full p-3 bg-white dark:bg-[#182232] border border-slate-200 dark:border-[#2a374a] rounded-xl focus:bg-white dark:focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-700 dark:text-slate-200 shadow-sm resize-none"></textarea>
                 </div>
 
-                <!-- 3. Fully Paid SMS -->
                 <div>
                     <label class="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 mb-1 ml-1 uppercase tracking-wider">3. Payment Complete (Balance 0)</label>
                     <textarea id="smsTemplateComplete" rows="3" class="w-full p-3 bg-white dark:bg-[#182232] border border-slate-200 dark:border-[#2a374a] rounded-xl focus:bg-white dark:focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-700 dark:text-slate-200 shadow-sm resize-none"></textarea>
@@ -1082,7 +1039,6 @@
         </div>
     </div>
 
-    <!-- About Modal -->
     <div id="aboutModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="aboutContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[320px] p-6 relative transform transition-all border border-white/50 flex flex-col items-center bg-white dark:bg-slate-900 mx-auto text-center">
             <button onclick="closeAboutModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
@@ -1111,34 +1067,56 @@
         </div>
     </div>
 
-    <!-- Support Modal -->
     <div id="supportModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="supportContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[320px] p-6 relative transform transition-all border border-white/50 flex flex-col items-center bg-white dark:bg-slate-900 mx-auto text-center">
             <button onclick="closeSupportModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             
-            <div class="w-12 h-12 bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm mt-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <div class="w-14 h-14 bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm mt-2">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
             </div>
-            <h3 class="text-xl font-extrabold text-slate-800 dark:text-white tracking-tight mb-1">Support</h3>
-            <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-4 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full border border-amber-100 dark:border-amber-800/50">Need Help?</p>
+            <h3 class="text-xl font-extrabold text-slate-800 dark:text-white tracking-tight mb-1">Support & Help</h3>
+            <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-4 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full border border-amber-100 dark:border-amber-800/50">We are here for you</p>
             
             <p class="text-[12px] font-medium text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
-                For assistance, bug reports, or feature requests regarding KUBO Tractor Works, please contact our support team.
+                For technical assistance or inquiries regarding your KUBO tractor works app, please contact support.
             </p>
             
-            <div class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 rounded-xl p-3 mb-2 flex items-center justify-between text-left shadow-sm">
-                <div>
-                    <h4 class="text-[11px] font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-0.5">Help Email</h4>
-                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100">support@kubo.app</p>
+            <button onclick="closeSupportModal()" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl active:bg-slate-200 dark:active:bg-slate-700 transition-colors text-xs">Close</button>
+        </div>
+    </div>
+
+    <div id="profileModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
+        <div id="profileContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-[300px] p-5 relative transform transition-all border border-white/50 flex flex-col items-center bg-white dark:bg-slate-900 mx-auto text-center">
+            <button onclick="closeProfileModal()" class="absolute top-3.5 right-3.5 w-7 h-7 flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 rounded-full text-slate-500 dark:text-slate-400 transition-colors z-10 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="relative group mt-1 mb-2.5">
+                <div id="profileAvatarContainer" class="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-md overflow-hidden border-2 border-emerald-500/30">
+                    <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
-                <div class="w-8 h-8 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center shadow-inner">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <label for="profilePhotoInput" class="absolute bottom-0 right-0 bg-emerald-600 hover:bg-emerald-500 text-white p-2 rounded-full cursor-pointer shadow-lg transition-transform active:scale-95">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </label>
+                <input type="file" id="profilePhotoInput" accept="image/*" class="hidden" onchange="handleProfilePhotoUpload(event)">
+            </div>
+
+            <h3 class="text-lg font-extrabold text-slate-800 dark:text-white tracking-tight mb-0.5">My Profile</h3>
+            <p id="profileEmailDisplay" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mb-3 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-800/50 truncate max-w-full">user@kubo.app</p>
+            
+            <div class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 rounded-xl p-3 mb-3.5 flex items-center justify-between text-left shadow-sm">
+                <div>
+                    <h4 class="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-0.5">Account Status</h4>
+                    <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">Cloud Synced & Active</p>
+                </div>
+                <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center shadow-inner">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                 </div>
             </div>
             
-            <button onclick="closeSupportModal()" class="w-full mt-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl active:bg-slate-200 dark:active:bg-slate-700 transition-colors text-xs">Close</button>
+            <button onclick="closeProfileModal()" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-xl active:bg-slate-200 dark:active:bg-slate-700 transition-colors text-xs">Close</button>
         </div>
     </div>
 
@@ -1178,12 +1156,13 @@
         let currentAuthMode = 'signin';
         let unsubscribeRecords = null;
         let unsubscribeDriver = null;
+        let unsubscribeUser = null;
         let isFirstAuthCheck = true;
         let isAppLoading = true;
         
         let driverData = { paidAmount: 0, paymentHistory: [] };
+        let userProfileData = { photoUrl: '' };
 
-        // Default SMS Templates
         const defaultSMSTemplates = {
             newWork: "Ayubowan [NAME], oba ge nawa wada satahana saha Rs. [PAID] ka aththikaram mudala labuna. Total: Rs. [TOTAL], Balance: Rs. [DUE]. Stuthiyi! - KUBO",
             payment: "Ayubowan [NAME], oba ge Rs. [PAID] ka gewima labuna. Total: Rs. [TOTAL], Balance: Rs. [DUE]. Stuthiyi! - KUBO",
@@ -1280,7 +1259,7 @@
             animateCount(totalDueDisplay, 0, targetStats.totalDue, 1100, 'currency', true);
             animateCount(document.getElementById('driverTotalDisplay'), 0, targetStats.driverBalance, 1100, 'currency', true);
             animateCount(totalRecordsDisplay, 0, targetStats.totalWorks, 900, 'works', false);
-            animateCount(document.getElementById('totalAcresDisplay'), 0, targetStats.totalAcres, 900, 'acres', false);
+            animateCount(totalAcresDisplay, 0, targetStats.totalAcres, 900, 'acres', false);
             lastGrandTotal = targetStats.grandTotal;
             lastTotalPaid = targetStats.totalPaid;
             lastTotalDue = targetStats.totalDue;
@@ -1432,6 +1411,63 @@
         window.closeSupportModal = function() {
             window.closeAnimatedModal('supportModal', 'supportContent');
         };
+
+        window.openProfileModal = function() {
+            if (auth.currentUser && auth.currentUser.email) {
+                const profileEmail = document.getElementById('profileEmailDisplay');
+                if (profileEmail) profileEmail.innerText = auth.currentUser.email;
+            }
+            updateProfileAvatarDisplay();
+            window.openAnimatedModal('profileModal', 'profileContent');
+        };
+
+        window.closeProfileModal = function() {
+            window.closeAnimatedModal('profileModal', 'profileContent');
+        };
+
+        function updateProfileAvatarDisplay() {
+            const headerAvatar = document.getElementById('headerProfileAvatar');
+            const modalAvatar = document.getElementById('profileAvatarContainer');
+            
+            if (userProfileData && userProfileData.photoUrl) {
+                const imgHtml = `<img src="${userProfileData.photoUrl}" alt="Profile" class="w-full h-full object-cover rounded-full pointer-events-auto">`;
+                if (headerAvatar) headerAvatar.innerHTML = imgHtml;
+                if (modalAvatar) modalAvatar.innerHTML = imgHtml;
+            } else {
+                const defaultSvg = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>`;
+                const modalDefaultSvg = `<svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>`;
+                if (headerAvatar) headerAvatar.innerHTML = defaultSvg;
+                if (modalAvatar) modalAvatar.innerHTML = modalDefaultSvg;
+            }
+        }
+
+        window.handleProfilePhotoUpload = async function(e) {
+            const file = e.target.files[0];
+            if (!file || !userId) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                window.customAlert("Image size should be less than 2MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const base64String = event.target.result;
+                try {
+                    await setDoc(doc(db, 'kubo_users', userId), {
+                        photoUrl: base64String,
+                        updatedAt: new Date().toISOString()
+                    }, { merge: true });
+                    userProfileData.photoUrl = base64String;
+                    updateProfileAvatarDisplay();
+                    window.playClickSound();
+                } catch (err) {
+                    console.error("Error saving profile photo:", err);
+                    window.customAlert("Failed to save profile picture.");
+                }
+            };
+            reader.readAsDataURL(file);
+        };
         
         window.resetSMSTemplates = function() {
             document.getElementById('smsTemplateNewWork').value = defaultSMSTemplates.newWork;
@@ -1472,14 +1508,12 @@
         
         async function loadSettings() {
             try {
-                // Load Theme
                 onSnapshot(doc(db, 'kubo_settings', 'theme'), (snap) => {
                     if (snap.exists() && typeof snap.data().darkMode === 'boolean') {
                         applyTheme(snap.data().darkMode);
                     }
                 });
                 
-                // Load SMS Templates
                 onSnapshot(doc(db, 'kubo_settings', 'sms_templates'), (snap) => {
                     if (snap.exists()) {
                         currentSMSTemplates = { ...defaultSMSTemplates, ...snap.data() };
@@ -1615,6 +1649,8 @@
         window.confirmSignOut = async function() {
             window.closeAnimatedModal('logoutModal', 'logoutContent', async () => {
                 if (unsubscribeRecords) unsubscribeRecords();
+                if (unsubscribeDriver) unsubscribeDriver();
+                if (unsubscribeUser) unsubscribeUser();
                 await signOut(auth);
             });
         };
@@ -1638,12 +1674,13 @@
 
             if (user) {
                 userId = user.uid;
+                const profileEmail = document.getElementById('profileEmailDisplay');
+                if (profileEmail) profileEmail.innerText = user.email || 'user@kubo.app';
                 initCloudSync();
                 loadSettings();
 
                 if (isFirstAuthCheck) {
                     isFirstAuthCheck = false;
-                    // Existing session found: seamlessly switch to dashboard behind the startup loader
                     if (loginScreen) {
                         loginScreen.classList.add('hidden');
                         loginScreen.style.opacity = '0';
@@ -1654,7 +1691,6 @@
                 const isLoginVisible = loginScreen && !loginScreen.classList.contains('hidden') && loginScreen.style.opacity !== '0';
 
                 if (isLoginVisible && initialStartupDone) {
-                    // Show spinner with login interface blurred in background for 2 seconds
                     window.showBlurLoader(2000, () => {
                         if (loginCard) {
                             loginCard.classList.remove('animate-modal-in');
@@ -1678,12 +1714,13 @@
             } else {
                 userId = null;
                 records = [];
+                userProfileData = { photoUrl: '' };
+                updateProfileAvatarDisplay();
                 renderRecords();
                 resetLoginForm();
 
                 if (isFirstAuthCheck) {
                     isFirstAuthCheck = false;
-                    // Logged out / new user on startup: login screen is already covering the dashboard
                     if (loginScreen) {
                         loginScreen.classList.remove('hidden');
                         loginScreen.style.opacity = '1';
@@ -1695,7 +1732,6 @@
                     return;
                 }
 
-                // Subsequent logout flow
                 if (initialStartupDone && loginScreen) {
                     loginScreen.classList.remove('hidden');
                     requestAnimationFrame(() => { loginScreen.style.opacity = '1'; });
@@ -1726,13 +1762,26 @@
                     driverData = { paidAmount: 0, paymentHistory: [] };
                 }
                 updateDriverDisplay();
-            }, (error) => {});
+            }, (error) => {
+                console.error("Driver sync error:", error);
+            });
+
+            if (unsubscribeUser) unsubscribeUser();
+            unsubscribeUser = onSnapshot(doc(db, 'kubo_users', userId), (docSnap) => {
+                if (docSnap.exists()) {
+                    userProfileData = docSnap.data();
+                } else {
+                    userProfileData = { photoUrl: '' };
+                }
+                updateProfileAvatarDisplay();
+            }, (error) => {
+                console.error("User profile sync error:", error);
+            });
         }
 
         window.openDriverModal = function() {
             updateDriverDisplay();
-            document.getElementById('driverPaymentInput').value = '';
-            window.openAnimatedModal('driverModal', 'driverModalContent', 'driverPaymentInput');
+            window.openAnimatedModal('driverModal', 'driverModalContent');
         };
 
         window.closeDriverModal = function() {
@@ -1789,7 +1838,6 @@
             if (modalPaid) modalPaid.innerText = formatCurrency(driverPaid);
             if (modalDue) modalDue.innerText = formatCurrency(driverDue > 0 ? driverDue : 0);
 
-            // Update home page compact card paid and due displays
             const cardPaid = document.getElementById('driverCardPaidDisplay');
             const cardDue = document.getElementById('driverCardDueDisplay');
             if (cardPaid) cardPaid.innerText = formatCurrency(driverPaid);
@@ -1814,7 +1862,6 @@
             const content = document.getElementById(contentId);
             if (!modal || !content) return;
 
-            // Lock background scroll and interactions
             document.documentElement.classList.add('overflow-hidden');
             document.body.classList.add('overflow-hidden');
             document.body.style.touchAction = 'none';
@@ -1832,7 +1879,6 @@
             const content = document.getElementById(contentId);
             if (!modal || !content) return;
 
-            // Check if any other modal is still open before restoring background scroll
             const openModals = document.querySelectorAll('[id$="Modal"]:not(.hidden)');
             if (openModals.length <= 1) {
                 document.documentElement.classList.remove('overflow-hidden');
@@ -1847,7 +1893,6 @@
             setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('animate-backdrop-out'); content.classList.remove('animate-modal-out'); if (cb) cb(); }, 270);
         };
 
-        // Prevent accidental touch dragging or gestures on modal backdrops
         document.addEventListener('touchmove', (e) => {
             const activeModal = e.target.closest('[id$="Modal"]');
             if (activeModal && e.target === activeModal) {
@@ -1921,7 +1966,6 @@
             if (r.works && r.works.length > 0) {
                 r.works.forEach(w => {
                     let type = w.type;
-                    // Format older labels to new standard
                     if (type === '1st Heeya') type = '1st';
                     if (type === '2nd Heeya') type = '2nd';
                     if (type === '3 Pooru gaama') type = '3rd';
@@ -1943,7 +1987,6 @@
                     `;
                 });
             } else {
-                // Fallback for older legacy records
                 const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
                 totalAmt = tot;
                 const displayAlli = r.displayAlli !== undefined ? r.displayAlli : Number((r.acres * 6).toFixed(2));
@@ -1963,7 +2006,6 @@
             }
 
             document.getElementById('ratesModalTotal').innerText = `Rs. ${totalAmt.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
-            
             window.openAnimatedModal('ratesModal', 'ratesContent');
         };
         
@@ -1989,7 +2031,6 @@
             `;
 
             try {
-                // Play Ka-Ching & Coin Chime sound + Money Haptic
                 window.playMoneySound();
                 
                 const r = records[activePaymentRecordIndex];
@@ -1999,7 +2040,6 @@
                 
                 await updateDoc(doc(db, 'kubo_works', r.id), { paidAmount: newPaid, paymentHistory: history });
                 
-                // Send automated SMS if customer phone exists
                 if (r.phone && r.phone.trim().length > 0) {
                     const totalAmt = (r.totalAmount || (r.acres * r.price));
                     const currentDue = totalAmt - newPaid;
@@ -2018,13 +2058,11 @@
             }
         };
 
-        // Notify.lk SMS Integration Function
         async function sendSMS(phoneNumber, customerName, paidAmountThisTime, totalPaidTillNow, totalAmount, balanceDue, templateType = 'payment') {
             const userId = "33323";
             const apiKey = "VJPk46LCGCvrkecQY73P";
             const senderId = "NotifyDEMO";
 
-            // Select template based on context
             let rawTemplate = defaultSMSTemplates.payment;
             if (templateType === 'newWork') {
                 rawTemplate = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
@@ -2034,7 +2072,6 @@
                 rawTemplate = currentSMSTemplates.payment || defaultSMSTemplates.payment;
             }
 
-            // Replace placeholder tags with actual values
             const message = rawTemplate
                 .replace(/\[NAME\]/g, customerName || 'Customer')
                 .replace(/\[PAID\]/g, paidAmountThisTime.toLocaleString())
@@ -2049,12 +2086,10 @@
             const url = `https://app.notify.lk/api/v1/send?user_id=${userId}&api_key=${apiKey}&sender_id=${senderId}&to=${formattedPhone}&message=${encodeURIComponent(message)}&type=unicode`;
 
             try {
-                // Using mode: 'no-cors' or handling network failure gracefully to prevent browser fetch exceptions in preview sandboxes
                 await fetch(url, { mode: 'no-cors' }).catch(err => {
                     console.warn("SMS network fetch restricted in preview sandbox:", err);
                     return null;
                 });
-                console.log("SMS dispatch initiated successfully:", templateType);
             } catch (error) {
                 console.error("SMS network error:", error);
             }
@@ -2176,7 +2211,6 @@
                 const due = tot - paid;
                 const isPaid = due <= 0;
                 const origIdx = records.findIndex(r => r.id === record.id);
-                // Convert old records to Alli for display if needed (1 Acre = 6 Alli)
                 const displayAlli = record.displayAlli !== undefined ? record.displayAlli : (record.alli !== undefined ? record.alli : Number((record.acres * 6).toFixed(2)));
 
                 let rateDisplay = '';
@@ -2322,7 +2356,7 @@
                     if (cb) { cb.checked = false; window.toggleWorkSection(id); }
                 });
                 document.getElementById('date').valueAsDate = new Date();
-                document.getElementById('global_alli').value = '',
+                document.getElementById('global_alli').value = '';
                 window.closeAddRecordModal();
             } catch (e) {
                 window.customAlert("Failed to save record.");
