@@ -641,60 +641,63 @@
                     <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 ml-1.5 uppercase tracking-wider mb-1">Work Types (Select needed)</label>
                     
                     <!-- 1st -->
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
-                        <div class="flex justify-between items-center mb-2.5">
-                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">1st</h4>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="toggle_heeya1" class="sr-only peer" onchange="toggleWorkSection('heeya1')">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
-                            </label>
-                        </div>
-                        <div id="fields_heeya1" class="opacity-50 pointer-events-none transition-opacity duration-300">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
-                                <div class="relative flex items-center">
-                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
-                                    <input type="text" inputmode="numeric" id="price_heeya1" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3.5 border border-slate-100 dark:border-slate-700/60">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                                    <input type="checkbox" id="toggle_heeya1" class="sr-only peer" onchange="toggleWorkSection('heeya1')">
+                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
+                                </label>
+                                <h4 class="text-[14px] font-extrabold text-slate-700 dark:text-slate-200">1st</h4>
+                            </div>
+                            <div id="fields_heeya1" class="opacity-50 pointer-events-none transition-opacity duration-300 flex-1 max-w-[210px]">
+                                <div>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
+                                        <input type="text" inputmode="numeric" id="price_heeya1" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 2nd -->
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
-                        <div class="flex justify-between items-center mb-2.5">
-                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">2nd</h4>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="toggle_heeya2" class="sr-only peer" onchange="toggleWorkSection('heeya2')">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
-                            </label>
-                        </div>
-                        <div id="fields_heeya2" class="opacity-50 pointer-events-none transition-opacity duration-300">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
-                                <div class="relative flex items-center">
-                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
-                                    <input type="text" inputmode="numeric" id="price_heeya2" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3.5 border border-slate-100 dark:border-slate-700/60">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                                    <input type="checkbox" id="toggle_heeya2" class="sr-only peer" onchange="toggleWorkSection('heeya2')">
+                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
+                                </label>
+                                <h4 class="text-[14px] font-extrabold text-slate-700 dark:text-slate-200">2nd</h4>
+                            </div>
+                            <div id="fields_heeya2" class="opacity-50 pointer-events-none transition-opacity duration-300 flex-1 max-w-[210px]">
+                                <div>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
+                                        <input type="text" inputmode="numeric" id="price_heeya2" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 3rd -->
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3 border border-slate-100 dark:border-slate-700/60">
-                        <div class="flex justify-between items-center mb-2.5">
-                            <h4 class="text-[13px] font-bold text-slate-700 dark:text-slate-200">3rd</h4>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="toggle_pooru" class="sr-only peer" onchange="toggleWorkSection('pooru')">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
-                            </label>
-                        </div>
-                        <div id="fields_pooru" class="opacity-50 pointer-events-none transition-opacity duration-300">
-                            <div>
-                                <label class="block text-[10px] font-extrabold text-slate-400 mb-1 uppercase tracking-wider">Price/Acre</label>
-                                <div class="relative flex items-center">
-                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
-                                    <input type="text" inputmode="numeric" id="price_pooru" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-[1.3rem] p-3.5 border border-slate-100 dark:border-slate-700/60">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                                    <input type="checkbox" id="toggle_pooru" class="sr-only peer" onchange="toggleWorkSection('pooru')">
+                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-[16px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500 shadow-inner"></div>
+                                </label>
+                                <h4 class="text-[14px] font-extrabold text-slate-700 dark:text-slate-200">3rd</h4>
+                            </div>
+                            <div id="fields_pooru" class="opacity-50 pointer-events-none transition-opacity duration-300 flex-1 max-w-[210px]">
+                                <div>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-[12px] font-bold pointer-events-none">Rs.</span>
+                                        <input type="text" inputmode="numeric" id="price_pooru" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-700 outline-none text-[13px] font-bold text-slate-700 dark:text-slate-100 shadow-sm box-border" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
