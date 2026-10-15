@@ -198,6 +198,7 @@
             }
         }, { passive: true });
     </script>
+    
     <style>
         *, *::before, *::after {
             -webkit-user-select: none;
@@ -466,7 +467,6 @@
 
         <main class="flex-1 px-5 z-20 mt-4 space-y-4">
             
-            <!-- Total Earnings Card (Single line formatted with enhanced bold/larger typography) -->
             <div class="bg-slate-800 rounded-3xl shadow-xl shadow-green-900/5 border border-slate-700/60 p-4 sm:p-5 transform transition-colors duration-300">
                 <div class="flex justify-between items-center mb-4 gap-2">
                     <div class="min-w-0 flex-1">
@@ -496,7 +496,6 @@
                 </div>
             </div>
 
-            <!-- Compact Driver Settlement Card -->
             <button onclick="openDriverModal()" class="w-full bg-slate-800 hover:bg-slate-700/80 rounded-2xl shadow-lg shadow-indigo-900/5 border border-slate-700/60 px-3 py-2 text-left transition-all active:scale-[0.98] group flex items-center justify-between">
                 <div class="flex items-center gap-2.5 min-w-0">
                     <div class="w-7 h-7 bg-indigo-950/60 text-indigo-400 rounded-lg flex items-center justify-center shadow-sm shrink-0">
@@ -518,7 +517,6 @@
                 </div>
             </button>
 
-            <!-- Add New Work Button -->
             <button onclick="openAddRecordModal()" class="w-full bg-gradient-to-r from-emerald-900 to-green-950 text-white rounded-[2rem] shadow-xl shadow-emerald-950/20 p-5 flex items-center justify-between group transition-all active:scale-[0.98]">
                 <div class="flex items-center gap-4">
                     <div class="bg-white/20 p-3.5 rounded-2xl text-white backdrop-blur-md">
@@ -534,7 +532,6 @@
                 </div>
             </button>
 
-            <!-- Recent Works Section -->
             <div class="mt-4 pb-4">
                 <div class="flex justify-between items-center mb-4 px-1 gap-3">
                     <div class="shrink-0">
@@ -937,7 +934,6 @@
                     <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-300 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
 
-                <!-- Driver Profile in Settings -->
                 <button onclick="openDriverSettingsModal()" class="w-full flex items-center justify-between px-4 py-3.5 bg-slate-800/80 hover:bg-slate-700/80 rounded-2xl border border-slate-700/60 transition-colors group">
                     <div class="flex items-center gap-3.5">
                         <div class="w-9 h-9 rounded-xl bg-indigo-900/40 flex items-center justify-center transition-colors shrink-0">
@@ -1066,7 +1062,6 @@
         </div>
     </div>
 
-    <!-- Driver Profiles Modal -->
     <div id="driverSettingsModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="driverSettingsContent" class="glass-modal rounded-[1.8rem] shadow-2xl w-full max-w-sm p-6 relative transform transition-all border border-white/50 bg-slate-900 mx-auto max-h-[90vh] flex flex-col">
             <button onclick="closeDriverSettingsModal()" aria-label="Close" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-800 hover:bg-slate-700 active:bg-slate-600 rounded-full text-slate-300 hover:text-white transition-colors z-10 shadow-sm">
@@ -1085,7 +1080,6 @@
                 </div>
             </div>
 
-            <!-- Add Driver Button Trigger -->
             <div class="shrink-0 mb-3">
                 <button type="button" onclick="openDriverForm()" id="addNewDriverBtn" class="w-full bg-indigo-950/60 hover:bg-indigo-900/80 text-indigo-300 hover:text-white border border-indigo-800/60 font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
@@ -1093,7 +1087,6 @@
                 </button>
             </div>
 
-            <!-- Add / Edit Driver Form -->
             <div id="driverFormContainer" class="hidden bg-slate-800/90 p-3.5 rounded-2xl border border-indigo-900/50 mb-3 shrink-0 space-y-3">
                 <div class="flex justify-between items-center">
                     <h4 id="driverFormTitle" class="text-xs font-black text-indigo-400 uppercase tracking-wider">New Driver</h4>
@@ -1113,7 +1106,6 @@
                 </div>
             </div>
 
-            <!-- Drivers List Container -->
             <div class="overflow-y-auto no-scrollbar flex-1 space-y-2 pr-0.5" id="driverSettingsList">
                 <!-- Dynamically populated -->
             </div>
@@ -1967,22 +1959,11 @@
             btn.innerHTML = 'Saving...';
 
             try {
-                window.playMoneySound();
                 const newPaid = (driverData.paidAmount || 0) + amt;
                 const history = driverData.paymentHistory || [];
                 history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
 
-                await setDoc(doc(db, 'kubo_driver', 'kubo_driver_01'), {
-                    paidAmount: newPaid,
-                    paymentHistory: history,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-
-                driverData = { ...driverData, paidAmount: newPaid, paymentHistory: history };
-                updateDriverDisplay();
-                document.getElementById('driverPaymentInput').value = '';
-
-                // Calculate driver total share and remaining balance
+                // Calculate driver total share and remaining balance before saving
                 let grandTotal = 0;
                 records.forEach(r => {
                     const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
@@ -1995,9 +1976,24 @@
                 const driverPhone = driverData.phone || (drivers.length > 0 ? drivers[0].phone : '');
                 const driverName = driverData.name || (drivers.length > 0 ? drivers[0].name : 'Driver');
 
+                // 1. Send SMS FIRST
                 if (driverPhone && driverPhone.trim().length > 0) {
                     await sendSMS(driverPhone, driverName, amt, newPaid, driverTotal, driverDue > 0 ? driverDue : 0, 'driverPayment');
                 }
+
+                // 2. Save to Database NEXT
+                await setDoc(doc(db, 'kubo_driver', 'kubo_driver_01'), {
+                    paidAmount: newPaid,
+                    paymentHistory: history,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                // 3. Update Display & Play Sound LAST
+                driverData = { ...driverData, paidAmount: newPaid, paymentHistory: history };
+                updateDriverDisplay();
+                document.getElementById('driverPaymentInput').value = '';
+                window.playMoneySound();
+
             } catch (e) {
                 console.error("Error saving driver payment:", e);
                 window.customAlert("Failed to save driver payment.");
@@ -2243,15 +2239,12 @@
             `;
 
             try {
-                window.playMoneySound();
-                
                 const r = records[activePaymentRecordIndex];
                 const newPaid = (r.paidAmount || 0) + amt;
                 const history = r.paymentHistory || [];
                 history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
                 
-                await updateDoc(doc(db, 'kubo_works', r.id), { paidAmount: newPaid, paymentHistory: history });
-                
+                // 1. Send SMS FIRST
                 if (r.phone && r.phone.trim().length > 0) {
                     const totalAmt = (r.totalAmount || (r.acres * r.price));
                     const currentDue = totalAmt - newPaid;
@@ -2260,6 +2253,11 @@
                     await sendSMS(r.phone, r.name, amt, newPaid, totalAmt, currentDue, isFullyPaid ? 'complete' : 'payment');
                 }
 
+                // 2. Save to Database NEXT
+                await updateDoc(doc(db, 'kubo_works', r.id), { paidAmount: newPaid, paymentHistory: history });
+                
+                // 3. Play Sound & Close LAST
+                window.playMoneySound();
                 window.closePaymentModal();
             } catch (e) {
                 window.customAlert("Failed to save payment.");
@@ -2272,8 +2270,8 @@
 
         async function sendSMS(phoneNumber, customerName, paidAmountThisTime, totalPaidTillNow, totalAmount, balanceDue, templateType = 'payment') {
             const smsUserId = "2686";
-            const apiKey = "4cd73058-6387-4cf5-88f1-a0b0db5ecd2a";
-            const senderId = "SMSlenzDEMO";
+            const apiKey = "f2451323-3d09-47f8-9a6a-3eafb01550e4";
+            const senderId = "KUBO";
             const baseUrl = "https://smslenz.lk/api";
 
             let rawTemplate = defaultSMSTemplates.payment;
@@ -2559,6 +2557,13 @@
             `;
 
             try {
+                // 1. Send SMS FIRST
+                if (phone && phone.trim().length > 0) {
+                    const currentDue = totalAmount - paid;
+                    await sendSMS(phone, name, paid, paid, totalAmount, currentDue, 'newWork');
+                }
+
+                // 2. Save to Database NEXT
                 await addDoc(collection(db, 'kubo_works'), {
                     name, location, phone, date, 
                     works,
@@ -2569,12 +2574,9 @@
                     userId, createdAt: new Date().toISOString()
                 });
                 
+                // 3. Play Sound LAST
                 if (paid > 0) {
                     window.playMoneySound();
-                    if (phone && phone.trim().length > 0) {
-                        const currentDue = totalAmount - paid;
-                        await sendSMS(phone, name, paid, paid, totalAmount, currentDue, 'newWork');
-                    }
                 } else {
                     window.playClickSound();
                 }
