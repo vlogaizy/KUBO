@@ -65,6 +65,7 @@
                 priceInput.value = '';
                 if (window.playClickSound) window.playClickSound();
             }
+            if (window.calculateLiveTotal) window.calculateLiveTotal();
         };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -624,7 +625,7 @@
                     </div>
                     <div class="min-w-0">
                         <label for="global_alli" class="block text-[11px] font-extrabold text-slate-400 mb-1.5 ml-1.5 uppercase tracking-wider">Alli (Total)</label>
-                        <input type="number" id="global_alli" required="required" min="0.1" step="0.1" placeholder="0" 
+                        <input type="number" id="global_alli" required="required" min="0.1" step="0.1" placeholder="0" oninput="if(window.calculateLiveTotal) window.calculateLiveTotal()"
                             class="w-full min-w-0 h-[44px] px-3 text-center bg-[#182232] border border-[#2a374a] rounded-full focus:bg-[#1c283c] focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 outline-none transition-all text-sm font-black text-white shadow-sm box-border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     </div>
                 </div>
@@ -645,7 +646,7 @@
                                 <div>
                                     <div class="relative flex items-center">
                                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-[12px] font-bold pointer-events-none">Rs.</span>
-                                        <input type="text" inputmode="numeric" id="price_heeya1" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-[13px] font-bold text-slate-100 shadow-sm box-border" />
+                                        <input type="text" inputmode="numeric" id="price_heeya1" placeholder="0" oninput="formatCurrencyInput(this); if(window.calculateLiveTotal) window.calculateLiveTotal()" class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-[13px] font-bold text-slate-100 shadow-sm box-border" />
                                     </div>
                                 </div>
                             </div>
@@ -665,7 +666,7 @@
                                 <div>
                                     <div class="relative flex items-center">
                                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-[12px] font-bold pointer-events-none">Rs.</span>
-                                        <input type="text" inputmode="numeric" id="price_heeya2" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-[13px] font-bold text-slate-100 shadow-sm box-border" />
+                                        <input type="text" inputmode="numeric" id="price_heeya2" placeholder="0" oninput="formatCurrencyInput(this); if(window.calculateLiveTotal) window.calculateLiveTotal()" class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-[13px] font-bold text-slate-100 shadow-sm box-border" />
                                     </div>
                                 </div>
                             </div>
@@ -685,12 +686,17 @@
                                 <div>
                                     <div class="relative flex items-center">
                                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-[12px] font-bold pointer-events-none">Rs.</span>
-                                        <input type="text" inputmode="numeric" id="price_pooru" placeholder="0" oninput="formatCurrencyInput(this)" class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-[13px] font-bold text-slate-100 shadow-sm box-border" />
+                                        <input type="text" inputmode="numeric" id="price_pooru" placeholder="0" oninput="formatCurrencyInput(this); if(window.calculateLiveTotal) window.calculateLiveTotal()" class="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-[13px] font-bold text-slate-100 shadow-sm box-border" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="bg-emerald-950/20 border border-emerald-900/50 rounded-[1.3rem] p-4 flex justify-between items-center shadow-inner">
+                    <span class="text-[11px] font-black text-emerald-400/90 uppercase tracking-wider">Calculated Total</span>
+                    <span id="liveTotalDisplay" class="text-lg font-black text-emerald-400">Rs. 0</span>
                 </div>
 
                 <div>
@@ -2147,7 +2153,31 @@
             }
         }, { passive: false });
 
-        window.openAddRecordModal = function() { window.openAnimatedModal('addRecordModal', 'addRecordContent', 'name'); };
+        window.calculateLiveTotal = function() {
+            const globalAlli = parseFloat(document.getElementById('global_alli').value) || 0;
+            let total = 0;
+            ['heeya1', 'heeya2', 'pooru'].forEach(id => {
+                const cb = document.getElementById(`toggle_${id}`);
+                if (cb && cb.checked) {
+                    const priceInput = document.getElementById(`price_${id}`);
+                    if (priceInput && priceInput.value) {
+                        const price = window.parseCurrencyInput ? window.parseCurrencyInput(priceInput.value) : parseFloat(priceInput.value.replace(/[^0-9]/g, ''));
+                        if (!isNaN(price)) {
+                            total += (globalAlli / 6) * price;
+                        }
+                    }
+                }
+            });
+            const displayObj = document.getElementById('liveTotalDisplay');
+            if (displayObj) {
+                displayObj.innerText = 'Rs. ' + total.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+            }
+        };
+
+        window.openAddRecordModal = function() { 
+            if (window.calculateLiveTotal) window.calculateLiveTotal();
+            window.openAnimatedModal('addRecordModal', 'addRecordContent', 'name'); 
+        };
         window.closeAddRecordModal = function() { window.closeAnimatedModal('addRecordModal', 'addRecordContent'); };
 
         window.customAlert = function(msg) { document.getElementById('alertMessage').innerText = msg; window.openAnimatedModal('alertModal', 'alertContent'); };
@@ -2630,6 +2660,7 @@
                 });
                 document.getElementById('date').valueAsDate = new Date();
                 document.getElementById('global_alli').value = '';
+                if(window.calculateLiveTotal) window.calculateLiveTotal();
                 window.closeAddRecordModal();
             } catch (e) {
                 window.customAlert("Failed to save record.");
