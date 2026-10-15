@@ -1048,7 +1048,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">4. Driver Payment (Settlement)</label>
+                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">4. Full Payment (At once)</label>
+                    <textarea id="smsTemplateFullPayment" rows="3" class="w-full p-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-200 shadow-sm resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">5. Driver Payment (Settlement)</label>
                     <textarea id="smsTemplateDriverPayment" rows="3" placeholder="Ayubowan [NAME], oba wetha Rs. [PAID] ka gewimak karana ladi. Ithiri higa mudala: Rs. [DUE]. Stuthiyi! - KUBO" class="w-full p-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-200 shadow-sm resize-none"></textarea>
                 </div>
             </div>
@@ -1194,7 +1199,7 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { 
             getAuth, 
             signInWithEmailAndPassword, 
@@ -1202,7 +1207,7 @@
             onAuthStateChanged, 
             signOut, 
             sendPasswordResetEmail 
-        } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
         import { 
             initializeFirestore,
             persistentLocalCache,
@@ -1219,7 +1224,7 @@
             getDoc,
             query,
             where
-        } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
         let records = [];
         let currentFilter = 'all';
@@ -1238,46 +1243,11 @@
         let editingDriverId = null;
 
         const defaultSMSTemplates = {
-            newWork: "Ayubowan [NAME],
-
-Your advance of Rs.[PAID] is received.
-
-Total: Rs.[TOTAL].
-Due: Rs.[DUE].
-
-Thank you for using our service.
-
-Sunchem Lanka Agro Center
-Tel : 0724343072",
-            payment: "Ayubowan [NAME],
-
-Obe Rs.[PAID] ka waarika mudala  labuna.
-
-Mulu mudala: Rs.[TOTAL].
-Gewiyayuthu mudala: Rs.[DUE].
-
-Sthuthiyi!
-
-Sunchem Lanka Agro Center
-Tel : 0724343072",
-            complete: "Ayubowan [NAME],
-
-Obe awasana geweema wana Rs.[PAID] ka mudala labuna.
-
-Mulu mudala wana Rs.[TOTAL] sampoornayenma gewa awasan.
-
-Ilanga kannayeth apage sewawa labaganna nawathath ekwanna. Sthuthiyi!
-
-Sunchem Lanka Agro Center
-Tel : 0724343072",
-            driverPayment: "Ayubowan [NAME],
-
-oba wetha Rs. [PAID] ka gewimak karana ladi.
-
-Ithiri higa mudala: Rs. [DUE].
-
-Sunchem Lanka Agro Center
-Tel : 0724343072"
+            newWork: `Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha Rs.[PAID] ka aththikaram mudala labuna.\n\nMulu mudala: Rs.[TOTAL].\nGewiyayuthu mudala: Rs.[DUE].\n\nApe sewaya laba gaththata stuthiyi!\n\nTel : 0782685261`,
+            fullPayment: `Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha mulu mudala wana Rs.[TOTAL] sampoornayenma labuna.\n\nThawath sewawan rasak samagin sewawan sapayamu. idhiri kannaya sarthaka wewai prarthana karamu!\n\nTel : 0782685261`,
+            payment: `Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha Rs.[PAID] ka waarika mudala  labuna.\n\nMulu mudala: Rs.[TOTAL].\nGewiyayuthu mudala: Rs.[DUE].\n\nSthuthiyi!\n\nTel : 0782685261`,
+            complete: `Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha awasana geweema wana Rs.[PAID] ka mudala labuna.\n\nMulu mudala wana Rs.[TOTAL] sampoornayenma gewa awasan.\n\nThawath sewawan rasak samagin sewawan sapayamu. idhiri kannaya sarthaka wewai prarthana karamu!\n\nTel : 0782685261`,
+            driverPayment: `Ayubowan,\n\nOba wetha Rs. [PAID] ka gewimak karana ladi.\n\nIthiri higa mudala: Rs. [DUE].\n\nSunchem Lanka Agro Center\nTel : 0782685261`
         };
         
         let currentSMSTemplates = { ...defaultSMSTemplates };
@@ -1623,11 +1593,13 @@ Tel : 0724343072"
             const paymentElem = document.getElementById('smsTemplatePayment');
             const completeElem = document.getElementById('smsTemplateComplete');
             const driverPayElem = document.getElementById('smsTemplateDriverPayment');
+            const fullPaymentElem = document.getElementById('smsTemplateFullPayment');
             
             if (newWorkElem) newWorkElem.value = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
             if (paymentElem) paymentElem.value = currentSMSTemplates.payment || defaultSMSTemplates.payment;
             if (completeElem) completeElem.value = currentSMSTemplates.complete || defaultSMSTemplates.complete;
             if (driverPayElem) driverPayElem.value = currentSMSTemplates.driverPayment || defaultSMSTemplates.driverPayment;
+            if (fullPaymentElem) fullPaymentElem.value = currentSMSTemplates.fullPayment || defaultSMSTemplates.fullPayment;
             
             window.closeSettingsModal();
             setTimeout(() => {
@@ -1686,11 +1658,13 @@ Tel : 0724343072"
             const paymentElem = document.getElementById('smsTemplatePayment');
             const completeElem = document.getElementById('smsTemplateComplete');
             const driverPayElem = document.getElementById('smsTemplateDriverPayment');
+            const fullPaymentElem = document.getElementById('smsTemplateFullPayment');
 
             if (newWorkElem) newWorkElem.value = defaultSMSTemplates.newWork;
             if (paymentElem) paymentElem.value = defaultSMSTemplates.payment;
             if (completeElem) completeElem.value = defaultSMSTemplates.complete;
             if (driverPayElem) driverPayElem.value = defaultSMSTemplates.driverPayment;
+            if (fullPaymentElem) fullPaymentElem.value = defaultSMSTemplates.fullPayment;
         };
         
         window.saveSMSTemplates = async function() {
@@ -1701,6 +1675,7 @@ Tel : 0724343072"
             
             const templates = {
                 newWork: document.getElementById('smsTemplateNewWork')?.value.trim() || defaultSMSTemplates.newWork,
+                fullPayment: document.getElementById('smsTemplateFullPayment')?.value.trim() || defaultSMSTemplates.fullPayment,
                 payment: document.getElementById('smsTemplatePayment')?.value.trim() || defaultSMSTemplates.payment,
                 complete: document.getElementById('smsTemplateComplete')?.value.trim() || defaultSMSTemplates.complete,
                 driverPayment: document.getElementById('smsTemplateDriverPayment')?.value.trim() || defaultSMSTemplates.driverPayment
@@ -2333,6 +2308,8 @@ Tel : 0724343072"
             let rawTemplate = defaultSMSTemplates.payment;
             if (templateType === 'newWork') {
                 rawTemplate = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
+            } else if (templateType === 'fullPayment') {
+                rawTemplate = currentSMSTemplates.fullPayment || defaultSMSTemplates.fullPayment;
             } else if (templateType === 'complete') {
                 rawTemplate = currentSMSTemplates.complete || defaultSMSTemplates.complete;
             } else if (templateType === 'driverPayment') {
@@ -2624,7 +2601,8 @@ Tel : 0724343072"
                 // 1. Send SMS FIRST
                 if (phone && phone.trim().length > 0) {
                     const currentDue = totalAmount - paid;
-                    await sendSMS(phone, name, paid, paid, totalAmount, currentDue, 'newWork');
+                    const smsType = currentDue <= 0 ? 'fullPayment' : 'newWork';
+                    await sendSMS(phone, name, paid, paid, totalAmount, currentDue, smsType);
                 }
 
                 // 2. Save to Database NEXT
