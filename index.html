@@ -609,6 +609,7 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                         </span>
                         <input type="tel" id="phone" placeholder="Phone Number (Optional)" 
+                            oninput="this.value = this.value.replace(/[^0-9+]/g, '')" maxlength="15"
                             class="w-full pl-9 bg-transparent border-none focus:ring-0 outline-none text-[14px] font-bold text-slate-100 placeholder-slate-500" />
                     </div>
                 </div>
@@ -1098,6 +1099,7 @@
                 </div>
                 <div>
                     <input type="tel" id="driverFormPhone" placeholder="Phone Number (e.g. 07XXXXXXXX)"
+                        oninput="this.value = this.value.replace(/[^0-9+]/g, '')" maxlength="15"
                         class="w-full px-3 py-2 bg-[#182232] border border-[#2a374a] rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-bold text-white shadow-sm" />
                 </div>
                 <div class="flex gap-2">
@@ -1214,7 +1216,9 @@
             onSnapshot, 
             collection, 
             setDoc,
-            getDoc
+            getDoc,
+            query,
+            where
         } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
         let records = [];
@@ -1499,6 +1503,14 @@
                 return;
             }
 
+            if (phone && phone.length > 0) {
+                const cleanPhone = phone.replace(/[^0-9+]/g, '');
+                if (cleanPhone.length < 9) {
+                    window.customAlert("Please enter a valid phone number (e.g. 07XXXXXXXX).");
+                    return;
+                }
+            }
+
             const btn = document.getElementById('saveDriverFormBtn');
             const originalText = btn ? btn.innerHTML : 'Save Driver';
             if (btn) {
@@ -1658,7 +1670,7 @@
             };
             
             try {
-                await setDoc(doc(db, 'kubo_settings', 'sms_templates'), templates);
+                await setDoc(doc(db, 'kubo_sms_settings', userId), templates);
                 currentSMSTemplates = templates;
                 btn.innerHTML = 'Saved!';
                 setTimeout(() => {
@@ -1677,10 +1689,13 @@
         };
         
         async function loadSettings() {
+            if (!userId) return;
             try {
-                onSnapshot(doc(db, 'kubo_settings', 'sms_templates'), (snap) => {
+                onSnapshot(doc(db, 'kubo_sms_settings', userId), (snap) => {
                     if (snap.exists()) {
                         currentSMSTemplates = { ...defaultSMSTemplates, ...snap.data() };
+                    } else {
+                        currentSMSTemplates = { ...defaultSMSTemplates };
                     }
                 });
             } catch (e) {
@@ -1897,8 +1912,11 @@
         });
 
         function initCloudSync() {
+            if (!userId) return;
+
             if (unsubscribeRecords) unsubscribeRecords();
-            unsubscribeRecords = onSnapshot(collection(db, 'kubo_works'), (snapshot) => {
+            const qWorks = query(collection(db, 'kubo_works'), where('userId', '==', userId));
+            unsubscribeRecords = onSnapshot(qWorks, (snapshot) => {
                 records = [];
                 snapshot.forEach((docSnap) => records.push({ id: docSnap.id, ...docSnap.data() }));
                 records.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1907,7 +1925,8 @@
                 console.warn("Firestore records sync notice:", error.message);
             });
 
-            onSnapshot(collection(db, 'kubo_drivers'), (snapshot) => {
+            const qDrivers = query(collection(db, 'kubo_drivers'), where('userId', '==', userId));
+            onSnapshot(qDrivers, (snapshot) => {
                 drivers = [];
                 snapshot.forEach((docSnap) => {
                     drivers.push({ id: docSnap.id, ...docSnap.data() });
@@ -1928,7 +1947,7 @@
             });
 
             if (unsubscribeDriver) unsubscribeDriver();
-            unsubscribeDriver = onSnapshot(doc(db, 'kubo_driver', 'kubo_driver_01'), (docSnap) => {
+            unsubscribeDriver = onSnapshot(doc(db, 'kubo_driver_settlements', userId), (docSnap) => {
                 if (docSnap.exists()) {
                     driverData = { paidAmount: 0, paymentHistory: [], name: '', phone: '', ...docSnap.data() };
                 } else {
@@ -1959,30 +1978,30 @@
             btn.innerHTML = 'Saving...';
 
             try {
-                const newPaid = (driverData.paidAmount || 0) + amt;
-                const history = driverData.paymentHistory || [];
-                history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
-
-                // Calculate driver total share and remaining balance before saving
-                let grandTotal = 0;
-                records.forEach(r => {
-                    const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
-                    grandTotal += tot;
-                });
-                const driverTotal = grandTotal * 0.20;
-                const driverDue = driverTotal - newPaid;
-
-                // Determine driver phone and name
-                const driverPhone = driverData.phone || (drivers.length > 0 ? drivers[0].phone : '');
-                const driverName = driverData.name || (drivers.length > 0 ? drivers[0].name : 'Driver');
-
+                if (editingDriverId) {
+                    await updateDoc(doc(db, 'kubo_drivers', editingDriverId), {
+                        name,
+                        phone,
+                        updatedAt: new Date().toISOString()
+                    });
+                } else {
+                    await addDoc(collection(db, 'kubo_drivers'), {
+                        name,
+                        phone,
+                        paidAmount: 0,
+                        paymentHistory: [],
+                        userId,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                if (window.playMoneySound) window.playMoneySound();
                 // 1. Send SMS FIRST
                 if (driverPhone && driverPhone.trim().length > 0) {
                     await sendSMS(driverPhone, driverName, amt, newPaid, driverTotal, driverDue > 0 ? driverDue : 0, 'driverPayment');
                 }
 
                 // 2. Save to Database NEXT
-                await setDoc(doc(db, 'kubo_driver', 'kubo_driver_01'), {
+                await setDoc(doc(db, 'kubo_driver_settlements', userId), {
                     paidAmount: newPaid,
                     paymentHistory: history,
                     updatedAt: new Date().toISOString()
@@ -2521,6 +2540,14 @@
             const date = document.getElementById('date').value;
             const paid = parseCurrencyInput(document.getElementById('paid').value);
             const globalAlli = parseFloat(document.getElementById('global_alli').value);
+
+            if (phone && phone.length > 0) {
+                const cleanPhone = phone.replace(/[^0-9+]/g, '');
+                if (cleanPhone.length < 9) {
+                    window.customAlert("Please enter a valid phone number (e.g. 07XXXXXXXX).");
+                    return;
+                }
+            }
 
             const works = [];
             let totalAmount = 0;
