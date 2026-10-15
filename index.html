@@ -1238,10 +1238,46 @@
         let editingDriverId = null;
 
         const defaultSMSTemplates = {
-            newWork: "Ayubowan [NAME], oba ge nawa wada satahana saha Rs. [PAID] ka aththikaram mudala labuna. Total: Rs. [TOTAL], Balance: Rs. [DUE]. Stuthiyi! - KUBO",
-            payment: "Ayubowan [NAME], oba ge Rs. [PAID] ka gewima labuna. Total: Rs. [TOTAL], Balance: Rs. [DUE]. Stuthiyi! - KUBO",
-            complete: "Ayubowan [NAME], oba ge Rs. [PAID] ka awasan gewima labuna. Oba ge sampoorna bilihpatha (Rs. [TOTAL]) piyawa atha. Stuthiyi! - KUBO",
-            driverPayment: "Ayubowan [NAME], oba wetha Rs. [PAID] ka gewimak karana ladi. Ithiri higa mudala: Rs. [DUE]. Stuthiyi! - KUBO"
+            newWork: "Ayubowan [NAME],
+
+Your advance of Rs.[PAID] is received.
+
+Total: Rs.[TOTAL].
+Due: Rs.[DUE].
+
+Thank you for using our service.
+
+Sunchem Lanka Agro Center
+Tel : 0724343072",
+            payment: "Ayubowan [NAME],
+
+Obe Rs.[PAID] ka waarika mudala  labuna.
+
+Mulu mudala: Rs.[TOTAL].
+Gewiyayuthu mudala: Rs.[DUE].
+
+Sthuthiyi!
+
+Sunchem Lanka Agro Center
+Tel : 0724343072",
+            complete: "Ayubowan [NAME],
+
+Obe awasana geweema wana Rs.[PAID] ka mudala labuna.
+
+Mulu mudala wana Rs.[TOTAL] sampoornayenma gewa awasan.
+
+Ilanga kannayeth apage sewawa labaganna nawathath ekwanna. Sthuthiyi!
+
+Sunchem Lanka Agro Center
+Tel : 0724343072",
+            driverPayment: "Ayubowan [NAME],
+
+oba wetha Rs. [PAID] ka gewimak karana ladi.
+
+Ithiri higa mudala: Rs. [DUE].
+
+Sunchem Lanka Agro Center
+Tel : 0724343072"
         };
         
         let currentSMSTemplates = { ...defaultSMSTemplates };
@@ -1531,10 +1567,11 @@
                         phone,
                         paidAmount: 0,
                         paymentHistory: [],
+                        userId: userId,
                         createdAt: new Date().toISOString()
                     });
                 }
-                if (window.playMoneySound) window.playMoneySound();
+                if (window.playClickSound) window.playClickSound();
                 cancelDriverForm();
             } catch (e) {
                 console.error("Error saving driver:", e);
@@ -1978,23 +2015,23 @@
             btn.innerHTML = 'Saving...';
 
             try {
-                if (editingDriverId) {
-                    await updateDoc(doc(db, 'kubo_drivers', editingDriverId), {
-                        name,
-                        phone,
-                        updatedAt: new Date().toISOString()
-                    });
-                } else {
-                    await addDoc(collection(db, 'kubo_drivers'), {
-                        name,
-                        phone,
-                        paidAmount: 0,
-                        paymentHistory: [],
-                        userId,
-                        createdAt: new Date().toISOString()
-                    });
-                }
-                if (window.playMoneySound) window.playMoneySound();
+                const newPaid = (driverData.paidAmount || 0) + amt;
+                const history = driverData.paymentHistory || [];
+                history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
+
+                // Calculate driver total share and remaining balance
+                let grandTotal = 0;
+                records.forEach(r => {
+                    const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                    grandTotal += tot;
+                });
+                const driverTotal = grandTotal * 0.20;
+                const driverDue = driverTotal - newPaid;
+
+                // Determine driver phone and name
+                const driverPhone = driverData.phone || (drivers.length > 0 ? drivers[0].phone : '');
+                const driverName = driverData.name || (drivers.length > 0 ? drivers[0].name : 'Driver');
+
                 // 1. Send SMS FIRST
                 if (driverPhone && driverPhone.trim().length > 0) {
                     await sendSMS(driverPhone, driverName, amt, newPaid, driverTotal, driverDue > 0 ? driverDue : 0, 'driverPayment');
