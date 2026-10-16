@@ -2019,10 +2019,10 @@ const defaultSMSTemplates = {
                 // Calculate driver total share and remaining balance
                 let grandTotal = 0;
                 records.forEach(r => {
-                    const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                    const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
                     grandTotal += tot;
                 });
-                const driverTotal = grandTotal * 0.20;
+                const driverTotal = Math.round((grandTotal * 0.20) / 100) * 100;
                 const driverDue = driverTotal - newPaid;
 
                 // Determine driver phone and name
@@ -2059,11 +2059,11 @@ const defaultSMSTemplates = {
         function updateDriverDisplay() {
             let grandTotal = 0;
             records.forEach(r => {
-                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
                 grandTotal += tot;
             });
 
-            const driverTotal = grandTotal * 0.20;
+            const driverTotal = Math.round((grandTotal * 0.20) / 100) * 100;
             const driverPaid = driverData.paidAmount || 0;
             const driverDue = driverTotal - driverPaid;
 
@@ -2179,14 +2179,14 @@ const defaultSMSTemplates = {
                     if (priceInput && priceInput.value) {
                         const price = window.parseCurrencyInput ? window.parseCurrencyInput(priceInput.value) : parseFloat(priceInput.value.replace(/[^0-9]/g, ''));
                         if (!isNaN(price)) {
-                            total += (globalAlli / 6) * price;
+                            total += Math.round(((globalAlli / 6) * price) / 100) * 100;
                         }
                     }
                 }
             });
             const displayObj = document.getElementById('liveTotalDisplay');
             if (displayObj) {
-                displayObj.innerText = 'Rs. ' + total.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+                displayObj.innerText = 'Rs. ' + total.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
             }
         };
 
@@ -2229,7 +2229,7 @@ const defaultSMSTemplates = {
         window.openPaymentModal = function(idx) {
             activePaymentRecordIndex = idx;
             const r = records[idx];
-            const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+            const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
             document.getElementById('paymentModalContext').innerText = `${r.name} - Due: Rs. ${(tot - (r.paidAmount || 0)).toLocaleString()}`;
             document.getElementById('newPaymentAmount').value = '';
             const btn = document.getElementById('savePaymentConfirmBtn');
@@ -2257,14 +2257,14 @@ const defaultSMSTemplates = {
                     if (type === '2nd Heeya') type = '2nd';
                     if (type === '3 Pooru gaama') type = '3rd';
 
-                    const subtotal = (w.alli / 6) * w.price;
+                    const subtotal = Math.round(((w.alli / 6) * w.price) / 100) * 100;
                     totalAmt += subtotal;
 
                     list.innerHTML += `
                         <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 flex flex-col gap-2 shadow-sm">
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] font-black uppercase tracking-wider text-slate-200 bg-slate-700/80 px-2 py-0.5 rounded-md">${type}</span>
-                                <span class="font-extrabold text-slate-100 text-[13px]">Rs. ${subtotal.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                                <span class="font-extrabold text-slate-100 text-[13px]">Rs. ${subtotal.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
                             </div>
                             <div class="flex justify-between items-center text-[10px] text-slate-400 font-medium px-1">
                                 <span>Alli: <strong class="text-slate-300 text-[11px]">${w.alli}</strong></span>
@@ -2274,7 +2274,7 @@ const defaultSMSTemplates = {
                     `;
                 });
             } else {
-                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
                 totalAmt = tot;
                 const displayAlli = r.displayAlli !== undefined ? r.displayAlli : Number((r.acres * 6).toFixed(2));
                 
@@ -2282,7 +2282,7 @@ const defaultSMSTemplates = {
                     <div class="bg-slate-800 border border-slate-700 rounded-xl p-3 flex flex-col gap-2 shadow-sm">
                         <div class="flex justify-between items-center">
                             <span class="text-[11px] font-black uppercase tracking-wider text-slate-200 bg-slate-700/80 px-2 py-0.5 rounded-md">General Work</span>
-                            <span class="font-extrabold text-slate-100 text-[13px]">Rs. ${tot.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                            <span class="font-extrabold text-slate-100 text-[13px]">Rs. ${tot.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
                         </div>
                         <div class="flex justify-between items-center text-[10px] text-slate-400 font-medium px-1">
                             <span>Alli: <strong class="text-slate-300 text-[11px]">${displayAlli}</strong></span>
@@ -2292,7 +2292,7 @@ const defaultSMSTemplates = {
                 `;
             }
 
-            document.getElementById('ratesModalTotal').innerText = `Rs. ${totalAmt.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
+            document.getElementById('ratesModalTotal').innerText = `Rs. ${totalAmt.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
             window.openAnimatedModal('ratesModal', 'ratesContent');
         };
         
@@ -2323,7 +2323,7 @@ const defaultSMSTemplates = {
                 
                 // 1. Send SMS FIRST
                 if (r.phone && r.phone.trim().length > 0) {
-                    const totalAmt = (r.totalAmount || (r.acres * r.price));
+                    const totalAmt = Math.round((r.totalAmount || (r.acres * r.price)) / 100) * 100;
                     const currentDue = totalAmt - newPaid;
                     const isFullyPaid = currentDue <= 0;
                     
@@ -2422,7 +2422,7 @@ const defaultSMSTemplates = {
         };
         window.closeHistoryModal = function() { window.closeAnimatedModal('historyModal', 'historyContent'); };
 
-        const formatCurrency = (amt, dec = false) => 'Rs. ' + Number(amt).toLocaleString('en-US', dec ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 2});
+        const formatCurrency = (amt, dec = false) => 'Rs. ' + Math.round(Number(amt)).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
 
         window.formatCurrencyInput = function(input) {
             let val = input.value.replace(/[^0-9]/g, '');
@@ -2451,7 +2451,7 @@ const defaultSMSTemplates = {
             recordsList.innerHTML = '';
             let grandTotal = 0, totalPaid = 0, totalDue = 0, totalAlli = 0;
             records.forEach(r => {
-                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
                 const paid = r.paidAmount || 0;
                 grandTotal += tot; totalPaid += paid; totalDue += (tot - paid);
                 
@@ -2461,7 +2461,7 @@ const defaultSMSTemplates = {
 
             updateDriverDisplay();
 
-            const driverTotalBalance = grandTotal * 0.20;
+            const driverTotalBalance = Math.round((grandTotal * 0.20) / 100) * 100;
 
             targetStats = {
                 grandTotal,
@@ -2500,7 +2500,7 @@ const defaultSMSTemplates = {
             }
 
             const filtered = records.filter(r => {
-                const tot = r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price);
+                const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
                 const due = tot - (r.paidAmount || 0);
                 if (currentFilter === 'pending' && due <= 0) return false;
                 if (currentFilter === 'completed' && due > 0) return false;
@@ -2514,7 +2514,7 @@ const defaultSMSTemplates = {
             emptyState.classList.add('hidden'); recordsList.classList.remove('hidden');
 
             filtered.forEach(record => {
-                const tot = record.totalAmount !== undefined ? record.totalAmount : (record.acres * record.price);
+                const tot = Math.round((record.totalAmount !== undefined ? record.totalAmount : (record.acres * record.price)) / 100) * 100;
                 const paid = record.paidAmount || 0;
                 const due = tot - paid;
                 const isPaid = due <= 0;
@@ -2603,14 +2603,6 @@ const defaultSMSTemplates = {
             const paid = parseCurrencyInput(document.getElementById('paid').value);
             const globalAlli = parseFloat(document.getElementById('global_alli').value);
 
-            if (phone && phone.length > 0) {
-                const cleanPhone = phone.replace(/[^0-9+]/g, '');
-                if (cleanPhone.length < 9) {
-                    window.customAlert("Please enter a valid phone number (e.g. 07XXXXXXXX).");
-                    return;
-                }
-            }
-
             const works = [];
             let totalAmount = 0;
 
@@ -2621,7 +2613,7 @@ const defaultSMSTemplates = {
                     if (!isNaN(price)) {
                         const typeName = id === 'heeya1' ? '1st' : (id === 'heeya2' ? '2nd' : '3rd');
                         works.push({ type: typeName, alli: globalAlli, price });
-                        totalAmount += (globalAlli / 6) * price;
+                        totalAmount += Math.round(((globalAlli / 6) * price) / 100) * 100;
                     }
                 }
             });
