@@ -48,6 +48,7 @@
         window.saveDriverForm = window.saveDriverForm || function() {};
         window.deleteDriver = window.deleteDriver || function() {};
         window.renderDriverSettingsList = window.renderDriverSettingsList || function() {};
+        window.handleSettlementDriverChange = window.handleSettlementDriverChange || function() {};
         window.switchAuthMode = window.switchAuthMode || function() {};
         window.openForgotPasswordModal = window.openForgotPasswordModal || function() {};
         
@@ -630,6 +631,20 @@
                     </div>
                 </div>
 
+                <!-- Select Driver for this Work -->
+                <div>
+                    <label for="recordDriverSelect" class="block text-[11px] font-extrabold text-slate-400 mb-1.5 ml-1.5 uppercase tracking-wider">Assigned Driver (Optional)</label>
+                    <div class="relative">
+                        <select id="recordDriverSelect"
+                            class="w-full px-3.5 py-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:ring-2 focus:ring-emerald-600 outline-none text-xs font-extrabold text-white shadow-sm appearance-none cursor-pointer pr-9">
+                            <option value="">Select Driver</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="space-y-3">
                     <label class="block text-[11px] font-extrabold text-slate-400 ml-1.5 uppercase tracking-wider mb-1">Work Types (Select needed)</label>
                     
@@ -716,7 +731,7 @@
         </div>
     </div>
 
-    <!-- Alert Modal (z-[400] so it always pops up on top) -->
+    <!-- Alert Modal -->
     <div id="alertModal" class="fixed inset-0 z-[400] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="alertContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-xs w-full p-5 text-center transform transition-all border border-white/50 flex flex-col items-center">
             <div class="w-11 h-11 bg-amber-950/60 text-amber-400 rounded-full flex items-center justify-center mb-3">
@@ -728,7 +743,7 @@
         </div>
     </div>
 
-    <!-- Confirm Modal (z-[400] so it always pops up on top of Profile / other modals) -->
+    <!-- Confirm Modal -->
     <div id="confirmModal" class="fixed inset-0 z-[400] hidden flex items-center justify-center p-4 transition-all duration-300">
         <div id="confirmContent" class="glass-modal rounded-[1.8rem] shadow-2xl max-w-xs w-full p-5 text-center transform transition-all border border-white/50">
             <div class="w-11 h-11 bg-red-950/60 text-red-400 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -877,8 +892,21 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-white mb-1 text-center shrink-0">Driver Settlement</h3>
-            <p id="driverModalSubtitle" class="text-slate-400 text-xs mb-4 font-medium text-center shrink-0">Manage driver payments & history</p>
+            <p id="driverModalSubtitle" class="text-slate-400 text-xs mb-3 font-medium text-center shrink-0">Manage driver payments & history</p>
             
+            <div class="mb-3 shrink-0">
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 ml-1">Select Driver</label>
+                <div class="relative">
+                    <select id="settlementDriverSelect" onchange="handleSettlementDriverChange(this.value)"
+                        class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-xs font-extrabold text-white shadow-sm appearance-none cursor-pointer pr-9">
+                        <option value="">General Driver Settlement</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-indigo-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-indigo-950/30 border border-indigo-900/50 rounded-2xl p-4 mb-4 shrink-0 space-y-2">
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-slate-300">Total Share (20%)</span>
@@ -1054,13 +1082,13 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">4. Payment Complete (Balance 0)</label>
-                    <textarea id="smsTemplateComplete" rows="3" class="w-full p-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-200 shadow-sm resize-none"></textarea>
+                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">4. Full Payment (At once)</label>
+                    <textarea id="smsTemplateFullPayment" rows="3" class="w-full p-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-200 shadow-sm resize-none"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">5. Full Payment (At once)</label>
-                    <textarea id="smsTemplateFullPayment" rows="3" class="w-full p-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-200 shadow-sm resize-none"></textarea>
+                    <label class="block text-[11px] font-extrabold text-slate-400 mb-1 ml-1 uppercase tracking-wider">5. Payment Complete (Balance 0)</label>
+                    <textarea id="smsTemplateComplete" rows="3" class="w-full p-3 bg-[#182232] border border-[#2a374a] rounded-xl focus:bg-[#1c283c] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[13px] font-medium text-slate-200 shadow-sm resize-none"></textarea>
                 </div>
 
                 <div>
@@ -1124,9 +1152,7 @@
                 </div>
             </div>
 
-            <div class="overflow-y-auto no-scrollbar flex-1 space-y-2 pr-0.5" id="driverSettingsList">
-                <!-- Dynamically populated -->
-            </div>
+            <div class="overflow-y-auto no-scrollbar flex-1 space-y-2 pr-0.5" id="driverSettingsList"></div>
         </div>
     </div>
 
@@ -1252,20 +1278,16 @@
         let driverData = { paidAmount: 0, paymentHistory: [], name: '', phone: '' };
         let drivers = [];
         let editingDriverId = null;
+        let selectedSettlementDriverId = '';
 
-const defaultSMSTemplates = {
-    newWork: "Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha Rs.[PAID] ka aththikaram mudala labi atha.\n\nMulu mudala: Rs.[TOTAL].\nGewiyayuthu mudala: Rs.[DUE].\n\nApe sewawa laba gaththata stuthiyi!\n\nTel : 0782685261",
-
-    newWorkNoAdvance: "Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha Rs.[TOTAL] ka mudalak gewiya yuthuy.\n\nApe sewawa laba gaththata stuthiyi!\n\nTel: 0782685261",
-
-    payment: "Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha Rs.[PAID] ka waarika mudala lebi etha.\n\nMulu mudala: Rs.[TOTAL].\nGewiyayuthu mudala: Rs.[DUE].\n\nSthuthiyi!\n\nTel : 0782685261",
-
-    complete: "Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha awasana geweema wana Rs.[PAID] ka mudala lebi etha.\n\nMulu mudala wana Rs.[TOTAL] sampoornayenma gewa awasan.\n\nThawath sewawan rasak samagin sewawan sapayamu. idhiri kannaya sarthaka wewai prarthana karamu!\n\nTel : 0782685261",
-
-    fullPayment: "Ayubowan,\n\nSunchem Lanka Agro Center wethin oba labagath tractor sewawa sandaha mulu mudala wana Rs.[TOTAL] sampoornayenma labi etha.\n\nThawath sewawan rasak samagin sewawan sapayamu. idhiri kannaya sarthaka wewai prarthana karamu!\n\nTel : 0782685261",
-
-    driverPayment: "Ayubowan,\n\nOba wetha Rs. [PAID] ka gewimak kara etha.\n\nIthiri higa mudala: Rs. [DUE].\n\nSunchem Lanka Agro Center\nTel : 0782685261"
-};
+        const defaultSMSTemplates = {
+            newWork: "Ayubowan [NAME],\n\nYour advance of Rs.[PAID] is received.\n\nTotal: Rs.[TOTAL].\nDue: Rs.[DUE].\n\nThank you for using our service.\n\nSunchem Lanka Agro Center\nTel : 0782685261",
+            newWorkNoAdvance: "Ayubowan [NAME],\n\nYour tractor work record has been created successfully.\n\nTotal: Rs.[TOTAL].\nDue: Rs.[DUE].\n\nThank you for using our service.\n\nSunchem Lanka Agro Center\nTel : 0782685261",
+            payment: "Ayubowan [NAME],\n\nObe Rs.[PAID] ka waarika mudala  labuna.\n\nMulu mudala: Rs.[TOTAL].\nGewiyayuthu mudala: Rs.[DUE].\n\nSthuthiyi!\n\nSunchem Lanka Agro Center\nTel : 0782685261",
+            fullPayment: "Ayubowan [NAME],\n\nOba labagath sewawata adala mulu mudala wana Rs.[TOTAL] sampoornayenma gewa awasan.\n\nSthuthiyi!\n\nSunchem Lanka Agro Center\nTel : 0782685261",
+            complete: "Ayubowan [NAME],\n\nObe awasana geweema wana Rs.[PAID] ka mudala labuna.\n\nMulu mudala wana Rs.[TOTAL] sampoornayenma gewa awasan.\n\nIlanga kannayeth apage sewawa labaganna nawathath ekwanna. Sthuthiyi!\n\nSunchem Lanka Agro Center\nTel : 0782685261",
+            driverPayment: "Ayubowan [NAME],\n\noba wetha Rs. [PAID] ka gewimak karana ladi.\n\nIthiri higa mudala: Rs. [DUE].\n\nSunchem Lanka Agro Center\nTel : 0782685261"
+        };
         
         let currentSMSTemplates = { ...defaultSMSTemplates };
 
@@ -1323,14 +1345,12 @@ const defaultSMSTemplates = {
 
         function animateCount(elem, fromVal, toVal, duration = 800, formatType = 'currency', dec = true) {
             if (!elem) return;
-            
             const formatValue = (val) => {
                 if (formatType === 'currency') return formatCurrency(val, dec);
                 if (formatType === 'works') return `${Math.round(val)} Works`;
                 if (formatType === 'acres') return `${(val).toFixed(1)} Acres`;
                 return val;
             };
-
             if (fromVal === toVal) {
                 elem.innerText = formatValue(toVal);
                 return;
@@ -1590,7 +1610,6 @@ const defaultSMSTemplates = {
         window.openDriverSettingsModal = function() {
             if (typeof renderDriverSettingsList === 'function') renderDriverSettingsList();
             if (typeof cancelDriverForm === 'function') cancelDriverForm();
-            else if (typeof window.cancelDriverForm === 'function') window.cancelDriverForm();
             window.openAnimatedModal('driverSettingsModal', 'driverSettingsContent');
         };
 
@@ -1609,16 +1628,16 @@ const defaultSMSTemplates = {
             const newWorkElem = document.getElementById('smsTemplateNewWork');
             const newWorkNoAdvElem = document.getElementById('smsTemplateNewWorkNoAdvance');
             const paymentElem = document.getElementById('smsTemplatePayment');
+            const fullPaymentElem = document.getElementById('smsTemplateFullPayment');
             const completeElem = document.getElementById('smsTemplateComplete');
             const driverPayElem = document.getElementById('smsTemplateDriverPayment');
-            const fullPaymentElem = document.getElementById('smsTemplateFullPayment');
             
             if (newWorkElem) newWorkElem.value = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
             if (newWorkNoAdvElem) newWorkNoAdvElem.value = currentSMSTemplates.newWorkNoAdvance || defaultSMSTemplates.newWorkNoAdvance;
             if (paymentElem) paymentElem.value = currentSMSTemplates.payment || defaultSMSTemplates.payment;
+            if (fullPaymentElem) fullPaymentElem.value = currentSMSTemplates.fullPayment || defaultSMSTemplates.fullPayment;
             if (completeElem) completeElem.value = currentSMSTemplates.complete || defaultSMSTemplates.complete;
             if (driverPayElem) driverPayElem.value = currentSMSTemplates.driverPayment || defaultSMSTemplates.driverPayment;
-            if (fullPaymentElem) fullPaymentElem.value = currentSMSTemplates.fullPayment || defaultSMSTemplates.fullPayment;
             
             window.closeSettingsModal();
             setTimeout(() => {
@@ -1676,16 +1695,16 @@ const defaultSMSTemplates = {
             const newWorkElem = document.getElementById('smsTemplateNewWork');
             const newWorkNoAdvElem = document.getElementById('smsTemplateNewWorkNoAdvance');
             const paymentElem = document.getElementById('smsTemplatePayment');
+            const fullPaymentElem = document.getElementById('smsTemplateFullPayment');
             const completeElem = document.getElementById('smsTemplateComplete');
             const driverPayElem = document.getElementById('smsTemplateDriverPayment');
-            const fullPaymentElem = document.getElementById('smsTemplateFullPayment');
 
             if (newWorkElem) newWorkElem.value = defaultSMSTemplates.newWork;
             if (newWorkNoAdvElem) newWorkNoAdvElem.value = defaultSMSTemplates.newWorkNoAdvance;
             if (paymentElem) paymentElem.value = defaultSMSTemplates.payment;
+            if (fullPaymentElem) fullPaymentElem.value = defaultSMSTemplates.fullPayment;
             if (completeElem) completeElem.value = defaultSMSTemplates.complete;
             if (driverPayElem) driverPayElem.value = defaultSMSTemplates.driverPayment;
-            if (fullPaymentElem) fullPaymentElem.value = defaultSMSTemplates.fullPayment;
         };
         
         window.saveSMSTemplates = async function() {
@@ -1697,8 +1716,8 @@ const defaultSMSTemplates = {
             const templates = {
                 newWork: document.getElementById('smsTemplateNewWork')?.value.trim() || defaultSMSTemplates.newWork,
                 newWorkNoAdvance: document.getElementById('smsTemplateNewWorkNoAdvance')?.value.trim() || defaultSMSTemplates.newWorkNoAdvance,
-                fullPayment: document.getElementById('smsTemplateFullPayment')?.value.trim() || defaultSMSTemplates.fullPayment,
                 payment: document.getElementById('smsTemplatePayment')?.value.trim() || defaultSMSTemplates.payment,
+                fullPayment: document.getElementById('smsTemplateFullPayment')?.value.trim() || defaultSMSTemplates.fullPayment,
                 complete: document.getElementById('smsTemplateComplete')?.value.trim() || defaultSMSTemplates.complete,
                 driverPayment: document.getElementById('smsTemplateDriverPayment')?.value.trim() || defaultSMSTemplates.driverPayment
             };
@@ -1965,7 +1984,13 @@ const defaultSMSTemplates = {
                 snapshot.forEach((docSnap) => {
                     drivers.push({ id: docSnap.id, ...docSnap.data() });
                 });
+                if (!selectedSettlementDriverId && drivers.length > 0) {
+                    selectedSettlementDriverId = drivers[0].id;
+                } else if (selectedSettlementDriverId && !drivers.some(d => d.id === selectedSettlementDriverId)) {
+                    selectedSettlementDriverId = drivers.length > 0 ? drivers[0].id : '';
+                }
                 renderDriverSettingsList();
+                updateDriverDisplay();
                 const settingsDriverSubtitle = document.getElementById('settingsDriverSubtitle');
                 if (settingsDriverSubtitle) {
                     if (drivers.length === 1) {
@@ -2002,6 +2027,12 @@ const defaultSMSTemplates = {
             window.closeAnimatedModal('driverModal', 'driverModalContent');
         };
 
+        window.handleSettlementDriverChange = function(driverId) {
+            selectedSettlementDriverId = driverId;
+            if (window.playClickSound) window.playClickSound();
+            updateDriverDisplay();
+        };
+
         window.saveDriverPayment = async function() {
             const amt = parseCurrencyInput(document.getElementById('driverPaymentInput').value);
             if (isNaN(amt) || amt <= 0) { window.customAlert("Enter a valid amount."); return; }
@@ -2012,37 +2043,52 @@ const defaultSMSTemplates = {
             btn.innerHTML = 'Saving...';
 
             try {
-                const newPaid = (driverData.paidAmount || 0) + amt;
-                const history = driverData.paymentHistory || [];
-                history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
+                const selectedDriver = drivers.find(d => d.id === selectedSettlementDriverId);
 
-                // Calculate driver total share and remaining balance
+                let totalPaidAll = (driverData.paidAmount || 0);
+                drivers.forEach(d => { totalPaidAll += (d.paidAmount || 0); });
+                const newTotalPaidAll = totalPaidAll + amt;
+
                 let grandTotal = 0;
                 records.forEach(r => {
                     const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
                     grandTotal += tot;
                 });
                 const driverTotal = Math.round((grandTotal * 0.20) / 100) * 100;
-                const driverDue = driverTotal - newPaid;
+                const driverDue = Math.round((driverTotal - newTotalPaidAll) / 100) * 100;
 
-                // Determine driver phone and name
-                const driverPhone = driverData.phone || (drivers.length > 0 ? drivers[0].phone : '');
-                const driverName = driverData.name || (drivers.length > 0 ? drivers[0].name : 'Driver');
+                const driverPhone = selectedDriver ? (selectedDriver.phone || '') : (driverData.phone || '');
+                const driverName = selectedDriver ? (selectedDriver.name || 'Driver') : (driverData.name || 'Driver');
 
-                // 1. Send SMS FIRST
                 if (driverPhone && driverPhone.trim().length > 0) {
-                    await sendSMS(driverPhone, driverName, amt, newPaid, driverTotal, driverDue > 0 ? driverDue : 0, 'driverPayment');
+                    await sendSMS(driverPhone, driverName, amt, newTotalPaidAll, driverTotal, driverDue > 0 ? driverDue : 0, 'driverPayment');
                 }
 
-                // 2. Save to Database NEXT
-                await setDoc(doc(db, 'kubo_driver_settlements', userId), {
-                    paidAmount: newPaid,
-                    paymentHistory: history,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
+                const today = new Date().toISOString().split('T')[0];
+                if (selectedDriver) {
+                    const newDriverPaid = (selectedDriver.paidAmount || 0) + amt;
+                    const dHistory = selectedDriver.paymentHistory ? [...selectedDriver.paymentHistory] : [];
+                    dHistory.push({ amount: amt, date: today, driverName: driverName });
 
-                // 3. Update Display & Play Sound LAST
-                driverData = { ...driverData, paidAmount: newPaid, paymentHistory: history };
+                    await updateDoc(doc(db, 'kubo_drivers', selectedDriver.id), {
+                        paidAmount: newDriverPaid,
+                        paymentHistory: dHistory,
+                        updatedAt: new Date().toISOString()
+                    });
+                } else {
+                    const newPaid = (driverData.paidAmount || 0) + amt;
+                    const history = driverData.paymentHistory ? [...driverData.paymentHistory] : [];
+                    history.push({ amount: amt, date: today, driverName: driverName });
+
+                    await setDoc(doc(db, 'kubo_driver_settlements', userId), {
+                        paidAmount: newPaid,
+                        paymentHistory: history,
+                        updatedAt: new Date().toISOString()
+                    }, { merge: true });
+
+                    driverData = { ...driverData, paidAmount: newPaid, paymentHistory: history };
+                }
+
                 updateDriverDisplay();
                 document.getElementById('driverPaymentInput').value = '';
                 window.playMoneySound();
@@ -2057,15 +2103,32 @@ const defaultSMSTemplates = {
         };
 
         function updateDriverDisplay() {
+            const selectElem = document.getElementById('settlementDriverSelect');
+            if (selectElem) {
+                let optionsHtml = '';
+                if (drivers.length === 0) {
+                    optionsHtml = `<option value="">General Driver (Add drivers in Settings)</option>`;
+                } else {
+                    optionsHtml = drivers.map(d => 
+                        `<option value="${d.id}" ${d.id === selectedSettlementDriverId ? 'selected' : ''}>${d.name || 'Unnamed Driver'}${d.phone ? ' (' + d.phone + ')' : ''}</option>`
+                    ).join('');
+                }
+                selectElem.innerHTML = optionsHtml;
+            }
+
+            const selectedDriver = drivers.find(d => d.id === selectedSettlementDriverId);
+
             let grandTotal = 0;
             records.forEach(r => {
-                const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
-                grandTotal += tot;
+                if (!selectedSettlementDriverId || r.driverId === selectedSettlementDriverId) {
+                    const tot = Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
+                    grandTotal += tot;
+                }
             });
 
             const driverTotal = Math.round((grandTotal * 0.20) / 100) * 100;
-            const driverPaid = driverData.paidAmount || 0;
-            const driverDue = driverTotal - driverPaid;
+            const driverPaid = selectedDriver ? (selectedDriver.paidAmount || 0) : (driverData.paidAmount || 0);
+            const driverDue = Math.round((driverTotal - driverPaid) / 100) * 100;
 
             const modalTotal = document.getElementById('driverModalTotal');
             const modalPaid = document.getElementById('driverModalPaid');
@@ -2074,48 +2137,36 @@ const defaultSMSTemplates = {
             if (modalPaid) modalPaid.innerText = formatCurrency(driverPaid);
             if (modalDue) modalDue.innerText = formatCurrency(driverDue > 0 ? driverDue : 0);
 
+            let totalDriverPaidAll = (driverData.paidAmount || 0);
+            let totalDriverShareAll = 0;
+            let fullGrandTotal = 0;
+            records.forEach(r => {
+                fullGrandTotal += Math.round((r.totalAmount !== undefined ? r.totalAmount : (r.acres * r.price)) / 100) * 100;
+            });
+            totalDriverShareAll = Math.round((fullGrandTotal * 0.20) / 100) * 100;
+            drivers.forEach(d => {
+                totalDriverPaidAll += (d.paidAmount || 0);
+            });
+            const totalDriverDueAll = Math.round((totalDriverShareAll - totalDriverPaidAll) / 100) * 100;
+
             const cardPaid = document.getElementById('driverCardPaidDisplay');
             const cardDue = document.getElementById('driverCardDueDisplay');
-            if (cardPaid) cardPaid.innerText = formatCurrency(driverPaid);
-            if (cardDue) cardDue.innerText = formatCurrency(driverDue > 0 ? driverDue : 0);
+            if (cardPaid) cardPaid.innerText = formatCurrency(selectedDriver ? driverPaid : totalDriverPaidAll);
+            if (cardDue) cardDue.innerText = formatCurrency(selectedDriver ? (driverDue > 0 ? driverDue : 0) : (totalDriverDueAll > 0 ? totalDriverDueAll : 0));
 
-            // Update Driver Name and Phone on Card & Modals
             const driverCardTitle = document.getElementById('driverCardTitle');
             if (driverCardTitle) {
-                driverCardTitle.innerText = driverData.name ? `${driverData.name} (Driver)` : 'Driver Settlement';
-            }
-
-            const driverModalSubtitle = document.getElementById('driverModalSubtitle');
-            if (driverModalSubtitle) {
-                if (driverData.name) {
-                    driverModalSubtitle.innerText = `${driverData.name}${driverData.phone ? ' • ' + driverData.phone : ''}`;
+                if (selectedDriver && selectedDriver.name) {
+                    driverCardTitle.innerText = `${selectedDriver.name} (Driver)`;
                 } else {
-                    driverModalSubtitle.innerText = 'Manage driver payments & history';
-                }
-            }
-
-            const settingsDriverSubtitle = document.getElementById('settingsDriverSubtitle');
-            if (settingsDriverSubtitle) {
-                if (driverData.name) {
-                    settingsDriverSubtitle.innerText = `${driverData.name}${driverData.phone ? ' • ' + driverData.phone : ''}`;
-                } else {
-                    settingsDriverSubtitle.innerText = 'Name & phone number';
-                }
-            }
-
-            const deleteDriverBtn = document.getElementById('deleteDriverDetailsBtn');
-            if (deleteDriverBtn) {
-                if (driverData.name || driverData.phone) {
-                    deleteDriverBtn.classList.remove('hidden');
-                } else {
-                    deleteDriverBtn.classList.add('hidden');
+                    driverCardTitle.innerText = 'Driver Settlement';
                 }
             }
 
             const historyList = document.getElementById('driverHistoryList');
             if (historyList) {
                 historyList.innerHTML = '';
-                const history = driverData.paymentHistory || [];
+                const history = selectedDriver ? (selectedDriver.paymentHistory || []) : (driverData.paymentHistory || []);
                 if (history.length === 0) {
                     historyList.innerHTML = `<p class="text-slate-400 text-xs text-center py-3">No payments recorded.</p>`;
                 } else {
@@ -2184,6 +2235,7 @@ const defaultSMSTemplates = {
                     }
                 }
             });
+            total = Math.round(total / 100) * 100;
             const displayObj = document.getElementById('liveTotalDisplay');
             if (displayObj) {
                 displayObj.innerText = 'Rs. ' + total.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
@@ -2192,6 +2244,12 @@ const defaultSMSTemplates = {
 
         window.openAddRecordModal = function() { 
             if (window.calculateLiveTotal) window.calculateLiveTotal();
+            const recordDriverSelect = document.getElementById('recordDriverSelect');
+            if (recordDriverSelect) {
+                recordDriverSelect.innerHTML = '<option value="">Select Driver (Optional)</option>' + drivers.map(d => 
+                    `<option value="${d.id}">${d.name || 'Unnamed Driver'}${d.phone ? ' (' + d.phone + ')' : ''}</option>`
+                ).join('');
+            }
             window.openAnimatedModal('addRecordModal', 'addRecordContent', 'name'); 
         };
         window.closeAddRecordModal = function() { window.closeAnimatedModal('addRecordModal', 'addRecordContent'); };
@@ -2257,7 +2315,7 @@ const defaultSMSTemplates = {
                     if (type === '2nd Heeya') type = '2nd';
                     if (type === '3 Pooru gaama') type = '3rd';
 
-                    const subtotal = Math.round(((w.alli / 6) * w.price) / 100) * 100;
+                    const subtotal = Math.round((Math.round(((w.alli / 6) * w.price) / 100) * 100) / 100) * 100;
                     totalAmt += subtotal;
 
                     list.innerHTML += `
@@ -2321,20 +2379,16 @@ const defaultSMSTemplates = {
                 const history = r.paymentHistory || [];
                 history.push({ amount: amt, date: new Date().toISOString().split('T')[0] });
                 
-                // 1. Send SMS FIRST
                 if (r.phone && r.phone.trim().length > 0) {
                     const totalAmt = Math.round((r.totalAmount || (r.acres * r.price)) / 100) * 100;
-                    const currentDue = totalAmt - newPaid;
+                    const currentDue = Math.round((totalAmt - newPaid) / 100) * 100;
                     const isFullyPaid = currentDue <= 0;
                     
-                    await sendSMS(r.phone, r.name, amt, newPaid, totalAmt, currentDue, isFullyPaid ? 'complete' : 'payment');
+                    await sendSMS(r.phone, r.name, amt, newPaid, totalAmt, currentDue > 0 ? currentDue : 0, isFullyPaid ? 'complete' : 'payment');
                 }
 
-                // 2. Save to Database NEXT
-                await updateDoc(doc(db, 'kubo_works', r.id), { paidAmount: newPaid, paymentHistory: history });
-                
-                // 3. Play Sound & Close LAST
                 window.playMoneySound();
+                await updateDoc(doc(db, 'kubo_works', r.id), { paidAmount: newPaid, paymentHistory: history });
                 window.closePaymentModal();
             } catch (e) {
                 window.customAlert("Failed to save payment.");
@@ -2351,7 +2405,7 @@ const defaultSMSTemplates = {
             const senderId = "KUBO";
             const baseUrl = "https://smslenz.lk/api";
 
-            let rawTemplate = defaultSMSTemplates.payment;
+            let rawTemplate = currentSMSTemplates.payment || defaultSMSTemplates.payment;
             if (templateType === 'newWork') {
                 rawTemplate = currentSMSTemplates.newWork || defaultSMSTemplates.newWork;
             } else if (templateType === 'newWorkNoAdvance') {
@@ -2362,15 +2416,13 @@ const defaultSMSTemplates = {
                 rawTemplate = currentSMSTemplates.complete || defaultSMSTemplates.complete;
             } else if (templateType === 'driverPayment') {
                 rawTemplate = currentSMSTemplates.driverPayment || defaultSMSTemplates.driverPayment;
-            } else {
-                rawTemplate = currentSMSTemplates.payment || defaultSMSTemplates.payment;
             }
 
             const message = rawTemplate
                 .replace(/\[NAME\]/g, customerName || 'Customer')
-                .replace(/\[PAID\]/g, paidAmountThisTime.toLocaleString())
-                .replace(/\[TOTAL\]/g, totalAmount.toLocaleString())
-                .replace(/\[DUE\]/g, balanceDue > 0 ? balanceDue.toLocaleString() : "0");
+                .replace(/\[PAID\]/g, Math.round(paidAmountThisTime).toLocaleString())
+                .replace(/\[TOTAL\]/g, Math.round(totalAmount).toLocaleString())
+                .replace(/\[DUE\]/g, balanceDue > 0 ? Math.round(balanceDue).toLocaleString() : "0");
 
             let formattedPhone = phoneNumber.trim().replace(/\s+/g, '');
             if (formattedPhone.startsWith('0')) {
@@ -2392,9 +2444,7 @@ const defaultSMSTemplates = {
             try {
                 await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formData.toString(),
                     mode: 'no-cors'
                 }).catch(err => {
@@ -2602,6 +2652,7 @@ const defaultSMSTemplates = {
             const date = document.getElementById('date').value;
             const paid = parseCurrencyInput(document.getElementById('paid').value);
             const globalAlli = parseFloat(document.getElementById('global_alli').value);
+            const assignedDriverId = document.getElementById('recordDriverSelect')?.value || '';
 
             const works = [];
             let totalAmount = 0;
@@ -2617,6 +2668,8 @@ const defaultSMSTemplates = {
                     }
                 }
             });
+
+            totalAmount = Math.round(totalAmount / 100) * 100;
 
             if (works.length === 0) {
                 window.customAlert("Please select and fill at least one work type.");
@@ -2638,19 +2691,24 @@ const defaultSMSTemplates = {
             `;
 
             try {
-                // 1. Send SMS FIRST
-                if (phone && phone.trim().length > 0) {
-                    const currentDue = totalAmount - paid;
-                    let smsType = 'newWork';
-                    if (paid === 0) {
-                        smsType = 'newWorkNoAdvance';
-                    } else if (currentDue <= 0) {
-                        smsType = 'fullPayment';
-                    }
-                    await sendSMS(phone, name, paid, paid, totalAmount, currentDue, smsType);
+                const currentDue = Math.round((totalAmount - paid) / 100) * 100;
+                let smsType = 'newWork';
+                if (paid === 0) {
+                    smsType = 'newWorkNoAdvance';
+                } else if (currentDue <= 0) {
+                    smsType = 'fullPayment';
                 }
 
-                // 2. Save to Database NEXT
+                if (phone && phone.trim().length > 0) {
+                    await sendSMS(phone, name, paid, paid, totalAmount, currentDue > 0 ? currentDue : 0, smsType);
+                }
+
+                if (paid > 0) {
+                    window.playMoneySound();
+                } else {
+                    window.playClickSound();
+                }
+
                 await addDoc(collection(db, 'kubo_works'), {
                     name, location, phone, date, 
                     works,
@@ -2658,15 +2716,9 @@ const defaultSMSTemplates = {
                     displayAlli: globalAlli,
                     paidAmount: paid,
                     paymentHistory: paid > 0 ? [{ amount: paid, date }] : [],
+                    driverId: assignedDriverId,
                     userId, createdAt: new Date().toISOString()
                 });
-                
-                // 3. Play Sound LAST
-                if (paid > 0) {
-                    window.playMoneySound();
-                } else {
-                    window.playClickSound();
-                }
 
                 form.reset();
                 ['heeya1', 'heeya2', 'pooru'].forEach(id => {
